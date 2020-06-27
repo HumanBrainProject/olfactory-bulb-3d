@@ -58,9 +58,11 @@ NEURON {
 	RANGE R, g, mg, inmda, iampa, gnmda, gampa
 	RANGE x, mgid, ggid, srcgid, gmax, training
 	NONSPECIFIC_CURRENT i
-	GLOBAL Cdur, Alpha, Beta, E, Rinf, Rtau, ampatau
+	GLOBAL Cdur, Alpha, Beta, E, ampatau
+    RANGE Rinf, Rtau
 	GLOBAL gampafactor, nmdafactor
-	GLOBAL ltdinvl, ltpinvl, sighalf, sigslope, sigexp
+	RANGE ltdinvl, ltpinvl, sighalf, sigslope, sigexp
+    THREADSAFE
 }
 UNITS {
 	(nA) = (nanoamp)
@@ -109,8 +111,8 @@ STATE {Ron Roff
 }
 
 INITIAL {
-	PROTECT Rinf = Alpha / (Alpha + Beta)
-	PROTECT Rtau = 1 / (Alpha + Beta)
+	Rinf = Alpha / (Alpha + Beta)
+	Rtau = 1 / (Alpha + Beta)
 	synon = 0
 	gampa = 0
 }
@@ -137,7 +139,7 @@ DERIVATIVE release {
 
 
 FUNCTION mgblock(v(mV)) {
-	TABLE 
+	TABLE
 	DEPEND mg
 	FROM -140 TO 80 WITH 1000
 

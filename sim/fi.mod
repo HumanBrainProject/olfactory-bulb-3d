@@ -29,7 +29,7 @@ NEURON {
 	RANGE gmax, training
 	RANGE x, mgid, ggid, srcgid
 	GLOBAL ltdinvl, ltpinvl, sighalf, sigslope, sigexp
-
+    THREADSAFE
 	RANGE g
 }
 

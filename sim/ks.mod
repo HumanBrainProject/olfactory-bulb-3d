@@ -42,7 +42,7 @@ NEURON {
 	SUFFIX ks
 	USEION k READ ek WRITE ik
         RANGE gksbar,gks
-        GLOBAL pinf,qinf,taup,tauq
+        RANGE pinf,qinf,taup,tauq
 }
 
 STATE {

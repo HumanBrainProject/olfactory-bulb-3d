@@ -7,7 +7,7 @@ NEURON {
 	SUFFIX kamt
 	USEION k READ ek WRITE ik
 	RANGE  gbar, q10
-	GLOBAL minf, mtau, hinf, htau
+	RANGE minf, mtau, hinf, htau
 }
 
 PARAMETER {

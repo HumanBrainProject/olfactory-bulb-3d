@@ -92,11 +92,10 @@ NEURON {
 	POINT_PROCESS Gfluct
 	RANGE g_e, g_i, E_e, E_i, g_e0, g_i0, g_e1, g_i1
 	RANGE std_e, std_i, tau_e, tau_i, D_e, D_i
-	RANGE new_seed
 	NONSPECIFIC_CURRENT i
         
         THREADSAFE : only true if every instance has its own distinct Random
-        POINTER donotuse
+        BBCOREPOINTER donotuse
 }
 
 UNITS {
@@ -178,15 +177,6 @@ PROCEDURE oup() {		: use Scop function normrand(mean, std_dev)
    }
 }
 
-
-PROCEDURE new_seed(seed) {		: procedure to set the seed
-	set_seed(seed)
-:	VERBATIM
-:	  printf("Setting random generator with seed = %g\n", _lseed);
-:	ENDVERBATIM
-}
-
-
 VERBATIM
 double nrn_random_pick(void* r);
 void* nrn_random_arg(int argpos);
@@ -200,25 +190,22 @@ VERBATIM
 		: each instance. However, the corresponding hoc Random
 		: distribution MUST be set to Random.negexp(1)
 		*/
-		_lnormrand123= nrn_random_pick(_p_donotuse);
+        #if !NRNBBCORE
+		_lnormrand123 = nrn_random_pick(_p_donotuse);
+        #else
+        #pragma acc routine(nrnran123_normal) seq
+        _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
+        #endif
 	}else{
-		/* only can be used in main thread */
-		if (_nt != nrn_threads) {
-hoc_execerror("multithread random in NetStim"," only via hoc Random");
-		}
-ENDVERBATIM
-		: the old standby. Cannot use if reproducible parallel sim
-		: independent of nhost or which host this instance is on
-		: is desired, since each instance on this cpu draws from
-		: the same stream
-		normrand123 = normrand(0,1)
-VERBATIM
+		/* only use Random123 */
+        assert(0);
 	}
 ENDVERBATIM
 }
 
 PROCEDURE noiseFromRandom() {
 VERBATIM
+#if !NRNBBCORE
  {
 	void** pv = (void**)(&_p_donotuse);
 	if (ifarg(1)) {
@@ -227,6 +214,37 @@ VERBATIM
 		*pv = (void*)0;
 	}
  }
+#endif
 ENDVERBATIM
 }
 
+VERBATIM
+static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargsproto_) {
+#if !NRNBBCORE
+	/* error if using the legacy normrand */
+	if (!_p_donotuse) {
+		fprintf(stderr, "Gfluct: cannot use the legacy normrand generator for the random stream.\n");
+		assert(0);
+	}
+	if (d) {
+		uint32_t* di = ((uint32_t*)d) + *offset;
+		void** pv = (void**)(&_p_donotuse);
+		/* error if not using Random123 generator */
+		if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
+			fprintf(stderr, "Gfluct: Random123 generator is required\n");
+			assert(0);
+		}
+		/*printf("Gfluct bbcore_write %d %d %d\n", di[0], di[1], di[3]);*/
+	}
+	*offset += 3;
+#endif
+}
+
+static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {
+	assert(!_p_donotuse);
+	uint32_t* di = ((uint32_t*)d) + *offset;
+	nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+	*pv = nrnran123_newstream3(di[0], di[1], di[2]);
+	*offset += 3;
+}
+ENDVERBATIM

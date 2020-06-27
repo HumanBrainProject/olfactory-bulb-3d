@@ -1,0 +1,9 @@
+#!/bin/bash
+#PBS -A HBP_CDP2_it
+#PBS -l walltime=00:30:00
+#PBS -l select=64:ncpus=8:mpiprocs=8
+#
+module load intel
+module load intelmpi/5.1--binary
+cd $PBS_O_WORKDIR ! this is the dir where the job was submitted from
+mpirun nrniv -mpi -python sim-train.py

@@ -1,0 +1,126 @@
+begintemplate GranuleSpine
+        public init, sup_deep_flag
+        public head, neck
+        create head, neck
+        proc sup_deep_flag()    {
+          if($1) {
+            forall {gbar_kdrmt=0.004
+                   gbar_nax=0.04}
+          } else {
+            forall {gbar_kdrmt=0.005
+                    gbar_nax=0.027
+                   }
+          } 
+	}
+
+
+        proc init() {
+                neck { L = 2  diam = .1 }
+                head { L = 1  diam = 1 }
+                connect head(0), neck(1)
+                memb()
+        }
+        
+
+        proc memb() { local taum
+                taum = 27300
+                forall {
+                        insert pas
+
+                        insert nax
+                        insert kdrmt
+                        insert kamt
+
+                        Ra = 2.5
+                        cm = 1.8
+                        g_pas = 1/(taum/cm)
+                        e_pas = -55
+                        ek = -80
+                        ena = 50
+
+                        gbar_nax =0.04
+                        sh_nax=5
+                        gbar_kdrmt=0.004
+                        gbar_kamt =0.008
+                }
+        }
+endtemplate GranuleSpine
+
+begintemplate Granule
+        public segments, memb, init, setRN, sup_deep_flag
+        public soma, priden, priden2, ns
+        create soma, priden, priden2[1]
+        objref rng[7], ns[7]
+
+       	proc sup_deep_flag()	{
+       	  if($1) {
+       	    forall {gbar_kdrmt=0.004 
+                   gbar_nax =0.04}
+       	  } else {
+       	    forall {gbar_kdrmt=0.005
+                    gbar_nax=0.027
+                   }
+       	  } 
+       	}
+
+
+        proc default() {
+                soma       { L = 8    diam=8   }
+              priden     { L = 400  diam=1.2 }
+                priden2[0] { L = 400  diam=0.6 }
+                connect priden(0), soma(1)
+                connect priden2[0](0), priden(1)
+        }
+
+        proc segments() {
+                forsec "priden" nseg = 1 //int(L/20)+1
+                forsec "soma" nseg = 1
+        }
+
+
+        proc memb() { local taum
+                taum = 27300
+                forall {
+                        insert pas
+
+                        insert nax
+                        insert kdrmt
+                        insert kamt
+
+                        Ra = 2.5
+                        cm = 1.8
+                        g_pas = 1/(taum/cm)
+                        e_pas = -55 
+                        ek = -80
+                        ena = 50
+
+                        gbar_nax =0.04
+                        sh_nax=5
+                        gbar_kdrmt=0.004
+                        gbar_kamt =0.008
+                }
+        }
+
+        func setRN() { local rn, y0, a, b
+           y0 = 38.8925
+           a  = 579.4570
+
+           rn = $1
+
+                       
+           if(rn < (603-3*37) || rn > (603+3*37)) return 0
+           perc=1/((rn-y0)/a)
+           priden.diam = perc * 1.2
+           priden2[0].diam = perc * 0.6
+           return 1
+        }
+        proc init() { local i
+                default()
+                segments()
+                memb()
+
+        }
+
+
+
+endtemplate Granule

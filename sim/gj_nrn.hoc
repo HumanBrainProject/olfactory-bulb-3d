@@ -1,0 +1,15 @@
+proc mk_gj_src() { local mgid localobj pc, priden
+    pc = $o1
+    mgid = $2
+    priden = $o3
+    priden.sec {
+        pc.source_var(&v(0.99), mgid)
+    }                  
+}
+
+proc mk_gj_target() { local obj localobj gap, pc
+  pc = $o1
+  mgid = $2
+  gap  = $o3
+  pc.target_var(gap, &gap.vgap, mgid)
+}

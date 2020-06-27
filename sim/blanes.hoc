@@ -1,0 +1,51 @@
+begintemplate Blanes
+    public dend, soma, nden0, nden1
+    create soma, dend[1][1]
+
+    proc init() { local N, N0, i, j
+        N=2^3-1
+        N0=4
+        nden0=N0
+        nden1=N          
+        create dend[N0][N]
+        create soma
+                  
+        soma {
+            diam = 18
+            L    = 18
+        }
+
+        forsec "dend" {
+            L = 100
+            diam=1
+            nseg=7
+        }
+
+        for j=0, N0-1 {
+            connect dend[j][0](0), soma(1)
+        }
+
+        for j = 0, N0-1 {
+            for i = 2, N {
+                connect dend[j][i-1](0), dend[j][int(i/2)-1](1)
+            }
+        }
+        memb()
+    }
+    
+    proc memb() { local tau
+        forall {
+            insert pas
+            Ra=10
+            tau=13000
+            e_pas=-55 cm=1 g_pas=1/(tau/cm)
+            insert nax gbar_nax=0.04
+            insert kamt gbar_kamt=0.004
+            //insert ican
+                                 
+      
+            
+        }
+
+    }
+endtemplate Blanes

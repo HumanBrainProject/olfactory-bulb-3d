@@ -1,0 +1,195 @@
+begintemplate mTufted
+
+
+// ls - long secondary dendrites 
+
+public soma, priden, secden, tuftden, hillock, initialseg, node, myelin
+public all, secdens, tufts, dendritic, somatic, axonal, somden, ornsyn, ornrng, vcinit
+public  nsecden, ntuft, nmyelin
+
+nmyelin=5
+create soma, priden, secden[2], tuftden[1], hillock, initialseg, node[nmyelin], myelin[nmyelin]
+
+
+objref dendritic, somatic, somden, synodor, external_syn, all, secdens, tufts, axonal
+objref ornsyn, ornrng
+objref vc
+proc vcinit() {
+  priden vc = new VClamp(1)
+  vc.dur[0] = 10
+  vc.dur[1] = 0.1
+  vc.dur[2] = 0
+  vc.amp[0] = -55
+  vc.amp[1] = 100
+  vc.amp[2] = -55
+}
+
+
+proc init() {
+
+	ornsyn = new List()
+	ornsyn.remove_all()
+	ornrng = new List()
+	ornrng.remove_all()
+
+	nsecden = 2
+	ntuft = 1
+	subsets()
+	topol()
+	geometry()
+	segments()
+        
+	memb()
+}
+
+proc createsec() {
+	nsecden = $1
+	ntuft = $2
+        nmyelin=5  
+  
+	ornsyn.remove_all()
+	ornrng.remove_all()
+
+	create soma, priden, secden[nsecden], tuftden[ntuft], hillock, initialseg, node[nmyelin], myelin[nmyelin]
+}
+
+proc subsets() {
+	all = new SectionList()
+	forall all.append()
+	
+	secdens = new SectionList()
+	forsec "secden" secdens.append()
+
+	tufts = new SectionList()
+	forsec "tuftden" tufts.append()
+
+	dendritic = new SectionList()
+	forsec "priden" dendritic.append()
+	forsec secdens dendritic.append()
+	forsec tufts dendritic.append()
+
+	somatic = new SectionList()
+	soma somatic.append
+
+	axonal = new SectionList()
+	initialseg axonal.append()
+        forsec "node" axonal.append()
+}
+
+
+
+proc segments() {local i, dx
+
+	soma.nseg = 1
+	priden {
+		if(n3d() > 1) nseg = n3d() - 1
+	}
+	forsec tufts {
+		if(n3d() > 1) nseg = n3d() - 1
+	}
+	forsec secdens {
+		if(n3d() > 1) nseg = n3d() - 1
+	}
+	initialseg.nseg = 3
+	hillock.nseg = 3
+}
+
+proc geometry() {local i
+	soma { L = 25  diam = 20 }
+	priden { L = 300  diam = 3 }
+//	forsec tufts {rallbranch=20 L=300  diam(0:1)=.4:.4 }
+	forsec tufts {L=300  diam(0:1)=.4:.4 }
+	forsec secdens { L=1000  diam=2 }
+	initialseg{ L=30  diam=1.5}
+	hillock { L=5  diam(0:1) = soma.diam(0) : initialseg.diam(0) }
+        forsec "node" { L=1 diam=1 }
+        forsec "myelin" { L=1000  diam=1.5}                 
+	//define_shape()
+}
+	
+
+
+
+
+
+  proc topol() {local i  localobj s
+	if (numarg() > 0) if ($1 == 0) { // do not connect secondary dendrites
+	}else{ // connect all secondary dendrites to soma (no branching)
+		for i =0, nsecden-1 {
+			connect secden[i](0), soma(.5)
+		}
+	}
+	connect priden(0), soma(1)
+	for i =0, ntuft-1 {
+		connect tuftden[i](0), priden(1)
+	}
+
+	connect hillock(0), soma(0)
+	connect initialseg(0), hillock(1)
+
+              
+        connect myelin[0](0), initialseg(1)
+        for i = 0, nmyelin-1 {
+          connect node[i](0), myelin[i](1)
+          if (i == nmyelin-1) break
+          connect myelin[i+1](0), node[i](1)
+        }
+  }
+  
+  proc memb() { local tau, cap, Vrest
+    Vrest = -55
+    tau = 20180
+    cap = 1
+                
+    sh = 10
+                
+    forall {
+      insert ks gksbar_ks=0.0055 tp_ks=12.5 a0q_ks=2000 kp_ks=2.5 vhalfp_ks=-35-sh vhalfq_ks=-50-sh tvh_ks=-50-sh
+      insert kamt gbar_kamt=0.004
+      insert nax gbar_nax=0.04 sh_nax=15-sh
+      insert pas g_pas=1/(tau/cap) Ra=150 cm=cap e_pas=Vrest
+    }
+
+    forsec "initialseg" {
+      gksbar_ks=0
+      gbar_kamt=0.06
+      gbar_nax=2.5/1.15
+      g_pas=1/(tau/cap/3)
+    }
+    
+    forsec "node" {
+      gksbar_ks=0
+      gbar_kamt=0.06
+      gbar_nax =2.5/1.15
+      g_pas=1/(tau/cap/3)
+    }
+                
+    forsec "myelin" {
+      gksbar_ks=0
+      gbar_kamt=0
+      gbar_nax =0
+      g_pas=1/(tau/cap/3*10/3)
+      cm=cap/100
+    }
+    forall {
+      ek=-80
+      ena=40
+    }
+  }
+  
+
+
+  proc setup_orns() { localobj synodor, synrng
+	for i=0,ntuft-1 tuftden[i] {
+		synodor = new orn(0.5)
+                synrng = new Random()
+                synrng.Random123($1, $2+i)
+                synrng.normal(0, 1)
+                synodor.noiseFromRandom(synrng)
+		ornsyn.append(synodor)
+                ornrng.append(synrng)
+	}
+
+  }
+
+endtemplate mTufted

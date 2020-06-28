@@ -178,6 +178,7 @@ PROCEDURE oup() {		: use Scop function normrand(mean, std_dev)
 }
 
 VERBATIM
+#include "nrnran123.h"
 double nrn_random_pick(void* r);
 void* nrn_random_arg(int argpos);
 ENDVERBATIM

@@ -185,6 +185,7 @@ NET_RECEIVE(dummy) {
 
 
 VERBATIM
+#include "nrnran123.h"
 double nrn_random_pick(void* r);
 void* nrn_random_arg(int argpos);
 ENDVERBATIM

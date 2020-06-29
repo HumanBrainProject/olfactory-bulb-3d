@@ -144,10 +144,6 @@ BREAKPOINT {
 	SOLVE oup
         SOLVE states METHOD derivimplicit
         
-:	if(tau_e==0) {
-:	   g_e = std_e * normrand123()
-:	}
-
         SORN = O * (1-D)
         
         g_e = g_e1 + SORN * cc_peak * g_e_max + g_e_baseline

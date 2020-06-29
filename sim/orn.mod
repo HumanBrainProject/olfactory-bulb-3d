@@ -126,6 +126,7 @@ ASSIGNED {
 STATE { O C D }
 
 INITIAL {
+	initstream()
 	g_e1 = 0
 	if(tau_e != 0) {
 		D_e = 2 * std_e * std_e / tau_e
@@ -138,18 +139,11 @@ INITIAL {
         D = 0
 }
 
-
-
-
 BREAKPOINT {
         LOCAL SORN
 	SOLVE oup
         SOLVE states METHOD derivimplicit
         
-	if(tau_e==0) {
-	   g_e = std_e * normrand123()
-	}
-
         SORN = O * (1-D)
         
         g_e = g_e1 + SORN * cc_peak * g_e_max + g_e_baseline
@@ -161,6 +155,7 @@ BREAKPOINT {
 
         i = g_e * (v - E_e)
 }
+
 DERIVATIVE states {
   LOCAL KO, KC1, KC2, KD1, KD2
   KO = 1/100
@@ -185,29 +180,65 @@ NET_RECEIVE(dummy) {
 
 
 VERBATIM
+#if !NRNBBCORE /* running in NEURON */
+/*
+   1 means noiseFromRandom was called when _ran_compat was previously 0 .
+   2 means noiseFromRandom123 was called when _ran_compat was previously 0.
+*/
+static int _ran_compat; /* specifies the noise style for all instances */
+#endif /* running in NEURON */
+ENDVERBATIM
+
+
+VERBATIM
 #include "nrnran123.h"
 double nrn_random_pick(void* r);
 void* nrn_random_arg(int argpos);
+#if !NRNBBCORE
+int nrn_random_isran123(void* r, uint32_t* id1, uint32_t* id2, uint32_t* id3);
+void nrn_random_reset(void* r);
+#endif
 ENDVERBATIM
+
+PROCEDURE initstream() {
+VERBATIM
+  if (_p_donotuse) {
+    uint32_t id1, id2, id3;
+    #if NRNBBCORE
+      nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
+    #else
+      if (_ran_compat == 1) {
+        nrn_random_reset(_p_donotuse);
+      }else{
+        nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
+      }
+    #endif
+  }	
+ENDVERBATIM
+}
 
 FUNCTION normrand123() {
 VERBATIM
-	if (_p_donotuse) {
-		/*
-		:Supports separate independent but reproducible streams for
-		: each instance. However, the corresponding hoc Random
-		: distribution MUST be set to Random.negexp(1)
-		*/
-        #if !NRNBBCORE
-		_lnormrand123 = nrn_random_pick(_p_donotuse);
-        #else
-        #pragma acc routine(nrnran123_normal) seq
+  if (_p_donotuse) {
+    /*
+      :Supports separate independent but reproducible streams for
+      : each instance. However, the corresponding hoc Random
+      : distribution MUST be set to Random.negexp(1)
+    */
+    #if !NRNBBCORE
+      if(_ran_compat == 1) {
+        _lnormrand123 = nrn_random_pick(_p_donotuse);
+      }else{
         _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
-        #endif
-	}else{
-		/* only use Random123 */
-        assert(0);
-	}
+      }
+    #else
+      #pragma acc routine(nrnran123_normal) seq
+      _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
+    #endif
+  }else{
+    /* only use Random123 */
+    assert(0);
+  }
 ENDVERBATIM
 }
 
@@ -217,11 +248,40 @@ VERBATIM
 #if !NRNBBCORE
  {
 	void** pv = (void**)(&_p_donotuse);
+	if (_ran_compat == 2) {
+		fprintf(stderr, "orn.noiseFromRandom123 was previously called\n");
+		assert(0);
+	}
+	_ran_compat = 1;
 	if (ifarg(1)) {
 		*pv = nrn_random_arg(1);
 	}else{
 		*pv = (void*)0;
 	}
+ }
+#endif
+ENDVERBATIM
+}
+
+PROCEDURE noiseFromRandom123() {
+VERBATIM
+#if !NRNBBCORE
+ {
+        nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+        if (_ran_compat == 1) {
+		fprintf(stderr, "orn.noiseFromRandom was previously called\n");
+                assert(0);
+        }
+        _ran_compat = 2;
+        if (*pv) {
+                nrnran123_deletestream(*pv);
+                *pv = (nrnran123_State*)0;
+        }
+        if (ifarg(3)) {
+		*pv = nrnran123_newstream3((uint32_t)*getarg(1), (uint32_t)*getarg(2), (uint32_t)*getarg(3));
+        }else if (ifarg(2)) {
+		*pv = nrnran123_newstream((uint32_t)*getarg(1), (uint32_t)*getarg(2));
+        }
  }
 #endif
 ENDVERBATIM
@@ -237,11 +297,16 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 	}
 	if (d) {
 		uint32_t* di = ((uint32_t*)d) + *offset;
-		void** pv = (void**)(&_p_donotuse);
-		/* error if not using Random123 generator */
-		if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
-			fprintf(stderr, "orn: Random123 generator is required\n");
-			assert(0);
+		if (_ran_compat == 1) {
+			void** pv = (void**)(&_p_donotuse);
+			/* error if not using Random123 generator */
+			if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
+				fprintf(stderr, "orn: Random123 generator is required\n");
+				assert(0);
+			}
+		}else{
+			nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+			nrnran123_getids3(*pv, di, di+1, di+2);
 		}
 		/*printf("orn bbcore_write %d %d %d\n", di[0], di[1], di[3]);*/
 	}

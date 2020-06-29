@@ -253,7 +253,7 @@ VERBATIM
  {
 	void** pv = (void**)(&_p_donotuse);
 	if (_ran_compat == 2) {
-		fprintf(stderr, "Gfluct3.noiseFromRandom123 was previously called\n");
+		fprintf(stderr, "orn.noiseFromRandom123 was previously called\n");
 		assert(0);
 	}
 	_ran_compat = 1;
@@ -273,7 +273,7 @@ VERBATIM
  {
         nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
         if (_ran_compat == 1) {
-		fprintf(stderr, "Gfluct3.noiseFromRandom was previously called\n");
+		fprintf(stderr, "orn.noiseFromRandom was previously called\n");
                 assert(0);
         }
         _ran_compat = 2;

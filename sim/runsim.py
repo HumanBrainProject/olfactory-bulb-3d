@@ -35,8 +35,10 @@ def build_part_model(gloms, mitrals, dicfile=''):
 
 
   import distribute
-  import multisplit_distrib
-  multisplit_distrib.multisplit_distrib(distribute.getmodel())
+  if False:
+    # CoreNEURON does not support multisplit
+    import multisplit_distrib
+    multisplit_distrib.multisplit_distrib(distribute.getmodel())
 
   if params.gap_junctions_active:
     gapjunc.init() 

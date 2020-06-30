@@ -30,7 +30,9 @@ def prun(tstop):
 
   inittime = h.startsw()
   cvode.active(0)
-#  if rank == 0: print 'cvode active=', cvode.active()
+  if rank == 0: print 'cvode active=', cvode.active()
+  h.stdinit()
+  pc.nrncore_run("-e %g --voltage 1000." % (tstop, ), 0)
   h.stdinit()
   inittime = h.startsw() - inittime
   if rank == 0:
@@ -55,8 +57,6 @@ def prun(tstop):
         #tnext_clean += clean_weights_interval
    
     pc.psolve(tnext)
-    
-    
 
 #    if rank == 0:
 #      print 'sim. checkpoint at %g' % h.t
@@ -71,7 +71,7 @@ def prun(tstop):
     import binsave
     binsave.save(params.filename, spikevec, idvec)
     
-#    h.spike2file(params.filename, spikevec, idvec, n_spkout_sort, n_spkout_files)
+    h.spike2file(params.filename, spikevec, idvec, n_spkout_sort, n_spkout_files)
   
   runtime = h.startsw() - runtime
   comptime = pc.step_time()

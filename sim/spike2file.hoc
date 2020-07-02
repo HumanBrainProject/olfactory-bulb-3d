@@ -12,7 +12,7 @@ proc sortspikes() {local res, i, j, k, imin, x, nbin, tmin, tmax, tvl, spikecoun
 	nbin = $5 // number of ranks (from 0) to do the sorting
 	if (nbin > pc.nhost) { nbin = pc.nhost }
 	// for testing, round to the file output resolution
-	if (1) {
+	if (0) {
 		res = .00001
 		s1.div(res).add(.5).floor().mul(res)
 	}
@@ -128,7 +128,7 @@ proc spike2file() { local i, j, nf, me, ts, nbin, nspike, nbinperfile \
 			outf.aopen(s.s)
 			for i=0, vs.size-1  {
 				//outf.printf("%.5f %d\n", vs.x[i], vg.x[i])
-				outf.printf("%.10g %d\n", vs.x[i], vg.x[i])
+				outf.printf("%.7f %d\n", vs.x[i], vg.x[i])
 			}
 			outf.close
 		}

@@ -85,11 +85,12 @@ ENDCOMMENT
 INDEPENDENT {t FROM 0 TO 1 WITH 1 (ms)}
 
 NEURON {
+        THREADSAFE : only true if every instance has its own distinct Random
 	POINT_PROCESS orn
 	RANGE g_e, g_e_max, cc_peak, g_e_baseline
 	RANGE std_e, tau_e, D_e
+	GLOBAL net_receive_on
 	NONSPECIFIC_CURRENT i
-        THREADSAFE : only true if every instance has its own distinct Random
         BBCOREPOINTER donotuse
 }
 
@@ -109,6 +110,7 @@ PARAMETER {
         g_e_baseline    = 0       (umho)          : background noise
 	std_e	= 1e-3    (umho)	  : standard dev of excitatory conductance
 	tau_e	= 400     (ms)            : time constant of excitatory conductance
+	net_receive_on = 0
 }
 
 ASSIGNED {
@@ -174,8 +176,18 @@ PROCEDURE oup() {		: use Scop function normrand(mean, std_dev)
    }
 }
 
-NET_RECEIVE(dummy) {
+NET_RECEIVE(peak, base, gemax, stde) {
+  INITIAL {} : do not want to initialize base, etc. to 0.0
   C = 0
+  : off for original implementation where OdorStim fills in following
+  : at the interpreter level and then does a direct NetCon.event
+  : This is here to allow debugging with prcellstate.
+  if (net_receive_on) {
+    cc_peak = peak
+    g_e_baseline = base
+    g_e_max = gemax
+    std_e = stde
+  }
 }
 
 

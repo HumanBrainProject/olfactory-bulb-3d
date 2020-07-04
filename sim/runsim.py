@@ -64,6 +64,7 @@ def build_part_model(gloms, mitrals, dicfile=''):
 
 
   odseq = [ OdorStim(*od) for od in params.odor_sequence ]
+  model.odseq = odseq
 
   # record
   for rec in params.sec2rec:

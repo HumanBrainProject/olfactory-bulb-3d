@@ -42,15 +42,37 @@ import gidfunc
 #    del keys[0]
 
   
-
+''' OdorStimHelper is implemented in ostimhelper.mod and provides an
+    alternative to using the interpreter during the simulation run to
+    turn on the odors.  And so will work with CoreNEURON.
+'''
+use_OdorStimHelper = True
+h.net_receive_on_orn = 1.0 if use_OdorStimHelper else 0.0
  
+allow_prcellstate_debug = True
+''' Debugging differences between the new and old style is difficult when
+    prcellstate has
+    non-identical cell layout (existence of OdorStimHelper, existence of
+    NetCons connecting OdorStimHelper to orn, orn parameter or weight
+    differences merely due to on vs off). Hence the on vs off via the
+    GLOBAL net_receive_on_orn. With allow_prcellstate_debug = True,
+    cell layout is identical in either case
+    and discrepancies point to substantive differences. But comes at the
+    cost of setting up the new style regardless of whether it is being used
+    or not.  Meanwhile, if there are differences between spike rasters
+    of a version prior to existence of OdorStimHelper and this
+    net_receive_on_orn = 0.0, then it is difficult to take advantage of
+    prcellstate.
+'''
+
 class OdorStim:
   def __init__(self, odorname, start, dur, conc):
     ''' Specifies the odor for an OdorStim. Note that the OdorStim is
       activated with setup which can only be called after the mitrals
       dict exists (usually from determine_connections.py).
     ''' 
-
+    if rank == 0:
+      print("OdorStim %s start=%g dur=%g conc=%g"%(odorname, start, dur, conc))
     self.odorname = odorname
     self.start = start
     self.dur = dur
@@ -65,18 +87,48 @@ class OdorStim:
     elif params.glomerular_layer == 2:
       self.w_odor = odors.odors[odorname].afterPG_2(conc) # odor vector
 
-    # set up the netcons to simulate the ORNs
+    # set up the netcons to stimulate the ORNs
     self.netcons = {}
-    self.rng_act = params.ranstream(0, params.stream_orn_act)
-    self.rng_act.uniform(params.sniff_invl_min, params.sniff_invl_max)
+    if not use_OdorStimHelper:
+      self.rng_act = params.ranstream(0, params.stream_orn_act)
+      self.rng_act.uniform(params.sniff_invl_min, params.sniff_invl_max)
     
     model = getmodel()
+    self.src = None
+    if use_OdorStimHelper or allow_prcellstate_debug:
+      src = h.OdorStimHelper()
+      src.start = start
+      src.dur = dur
+      src.invl_min = params.sniff_invl_min
+      src.invl_max = params.sniff_invl_max
+      src.noiseFromRandom123(0, params.stream_orn_act, 0)
+      self.src = src
     for gid, cell in model.mitrals.items(): 
+      peak = self.w_odor[mgid2glom(gid)]
+      if gidfunc.ismitral(gid):
+        g_e_baseline = params.orn_g_mc_baseline
+        std_e = params.orn_g_mc_std
+        g_e_max = params.orn_g_mc_max
+      else:
+        g_e_baseline = params.orn_g_mt_baseline
+        std_e = params.orn_g_mt_std
+        g_e_max = params.orn_g_mt_max
+
       if h.section_exists("tuftden", 0, cell):
         for i in range(int(cell.ornsyn.count())):
-          self.netcons[(gid, i)] = h.NetCon(None, cell.ornsyn.o(i))
+          nc = h.NetCon(self.src, cell.ornsyn.o(i))
+          self.netcons[(gid, i)] = nc
+          # NetCon weights are peak, base, gemax, stde
+          nc.weight[0] = peak
+          nc.weight[1] = g_e_baseline
+          nc.weight[2] = g_e_max
+          nc.weight[3] = std_e
+          nc.delay = 0.0
 
-    self.fih = h.FInitializeHandler(0, (self.init_ev, (start,)))
+    if use_OdorStimHelper:
+      pass
+    else:
+      self.fih = h.FInitializeHandler(0, (self.init_ev, (start,)))
 
     
 

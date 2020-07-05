@@ -1,7 +1,0 @@
-manpath: warning: $MANPATH set, ignoring /etc/man_db.conf
-NEURON -- Release 7.4 (1370:16a7055d4a86) 2015-11-09
-Duke, Yale, and the BlueBrain Project -- Copyright 1984-2015
-See http://www.neuron.yale.edu/neuron/credits
-
-Additional mechanisms from files
- ampanmda.mod distrt.mod fi.mod fi_stdp.mod gap.mod Gfluct.mod kamt.mod kdrmt.mod ks.mod naxn.mod orn.mod ThreshDetect.mod

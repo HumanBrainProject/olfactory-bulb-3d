@@ -179,7 +179,7 @@ proc geometry() {local i
   proc setup_orns() { localobj synodor
 	for i=0,ntuft-1 tuftden[i] {
 		synodor = new orn(0.5)
-                synodor.noiseFromRandom($1, $2+i)
+                synodor.noiseFromRandom123($1, $2+i)
 		ornsyn.append(synodor)
 	}
 

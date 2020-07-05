@@ -4,7 +4,7 @@ begintemplate Mitral
 // ls - long secondary dendrites 
 
 public soma, priden, secden, tuftden, hillock, initialseg, node, myelin
-public all, secdens, tufts, dendritic, somatic, somden, ornsyn, ornrng, vcinit
+public all, secdens, tufts, dendritic, somatic, somden, ornsyn, vcinit
 public  nsecden, ntuft, nmyelin
 
 nmyelin=5
@@ -13,7 +13,7 @@ create soma, priden, secden[2], tuftden[1], hillock, initialseg, node[nmyelin], 
 
 
 objref dendritic, somatic, somden, synodor, external_syn, all, secdens, tufts, axonal
-objref ornsyn, ornrng
+objref ornsyn
 objref vc
 
 proc vcinit() {
@@ -30,8 +30,6 @@ proc init() {
 
 	ornsyn = new List()
 	ornsyn.remove_all()
-	ornrng = new List()
-	ornrng.remove_all()
 
 	nsecden = 2
 	ntuft = 1
@@ -49,7 +47,6 @@ proc createsec() {
         nmyelin=5  
   
 	ornsyn.remove_all()
-	ornrng.remove_all()
 
 	create soma, priden, secden[nsecden], tuftden[ntuft], hillock, initialseg, node[nmyelin], myelin[nmyelin]
 }
@@ -185,15 +182,11 @@ proc geometry() {local i
 
 
 
-  proc setup_orns() { localobj synodor, synrng
+  proc setup_orns() { localobj synodor
 	for i=0,ntuft-1 tuftden[i] {
 		synodor = new orn(0.5)
-                synrng = new Random()
-                synrng.Random123($1, $2+i)
-                synrng.normal(0, 1)
-                synodor.noiseFromRandom(synrng)
+                synodor.noiseFromRandom123($1, $2+i, 0)
 		ornsyn.append(synodor)
-                ornrng.append(synrng)
 	}
   }
 

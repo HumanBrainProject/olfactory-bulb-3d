@@ -139,9 +139,9 @@ DERIVATIVE release {
 
 
 FUNCTION mgblock(v(mV)) {
-	TABLE
-	DEPEND mg
-	FROM -140 TO 80 WITH 1000
+	:TABLE
+	:DEPEND mg
+	:FROM -140 TO 80 WITH 1000
 
 	: from Jahr & Stevens
 

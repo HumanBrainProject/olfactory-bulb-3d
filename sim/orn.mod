@@ -322,8 +322,8 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 		}
 		/*printf("orn bbcore_write %d %d %d\n", di[0], di[1], di[3]);*/
 	}
-	*offset += 3;
 #endif
+	*offset += 3;
 }
 
 static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {

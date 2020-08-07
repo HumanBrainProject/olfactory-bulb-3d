@@ -90,8 +90,8 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
     nrnran123_State** pv = (nrnran123_State**)(&_p_space);
     nrnran123_getids3(*pv, di, di+1, di+2);
   }
-  *offset += 3;
 #endif
+  *offset += 3;
 }
 
 static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {

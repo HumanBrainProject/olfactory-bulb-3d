@@ -1,0 +1,20 @@
+set LDSO=/lib64/ld64.so.2;
+set GCCDIR=/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0;
+set GPPDIR=ignoring duplicate directory "/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/../../../../include/c++/8.4.0" ignoring duplicate directory "/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/../../../../include/c++/8.4.0/powerpc64le-unknown-linux-gnu" ignoring duplicate directory "/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/../../../../include/c++/8.4.0/backward" ignoring duplicate directory "/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/include" ignoring duplicate directory "/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/include-fixed" /cineca/prod/opt/compilers/cuda/10.1/none/include /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/../../../../include/c++/8.4.0 /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/../../../../include/c++/8.4.0/powerpc64le-unknown-linux-gnu /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/../../../../include/c++/8.4.0/backward /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/include /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/include-fixed /usr/local/include /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../include /usr/include;
+set GCCINC=ignoring duplicate directory "/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/include" /cineca/prod/opt/compilers/cuda/10.1/none/include /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/include /usr/local/include /m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/../../include /usr/include;
+set G77DIR=/m100/prod/opt/compilers/gnu/8.4.0/none/bin/../lib/gcc/powerpc64le-unknown-linux-gnu/8.4.0/;
+set OEM_INFO=linuxpower target on Linuxpower $INFOTPVAL;
+set LOCALRC=YES;
+set EXTENSION=__extension__=;
+set COMPGCCINCDIR=include-gcc49;
+set GNUATOMIC=-latomic;
+set LC=$if(-Bstatic,--start-group -lgcc -lgcc_eh -lc --end-group , -lgcc --as-needed -lgcc_s --no-as-needed -lc -lgcc --as-needed -lgcc_s --no-as-needed);
+set DEFLIBDIR=/usr/lib64;
+set DEFSTDOBJDIR=/usr/lib64;
+# GLIBC version 2.17
+# GCC version 8.4.0
+set GCCVERSION=80400;
+set LOCALDEFS=__STDC_HOSTED__;
+set LLVMDIR=/cineca/prod/opt/compilers/pgi/19.10/binary/linuxpower/19.10/share/llvm;
+export PGI=$COMPBASE;
+# makelocalrc executed by pkumbhar Mon Jun 29 22:54:45

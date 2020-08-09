@@ -25,53 +25,74 @@ def prun(tstop):
   #pc.timeout(0)
   mindelay = pc.set_maxstep(10)
   if rank == 0: print 'mindelay = %g'%mindelay
+
+  cvode.active(0)
+  h.stdinit()
+
   runtime = h.startsw()
   exchtime = pc.wait_time()
+  solver_time = 0
 
   inittime = h.startsw()
-  cvode.active(0)
   if rank == 0: print 'cvode active=', cvode.active()
-  h.stdinit()
-  pc.nrncore_run("-e %g --voltage 1000." % (tstop, ), 0)
-  h.stdinit()
-  inittime = h.startsw() - inittime
+
   if rank == 0:
     if clean_weights_active:
       print 'weights reset active at %g ms' % clean_weights_interval
     else:
       print 'weights reset not active'
-    print 'init time = %g'%inittime
 
   tnext_clean = clean_weights_interval
-  while h.t < tstop:
-    told = h.t
-    tnext = h.t + checkpoint_interval
 
-    if tnext > tstop:
-      tnext = tstop
-
-    #if clean_weights_active:
-      #while tnext_clean < tnext:
-        #pc.psolve(tnext_clean)
-        #clean_weights()
-        #tnext_clean += clean_weights_interval
-   
-    pc.psolve(tnext)
-
-#    if rank == 0:
-#      print 'sim. checkpoint at %g' % h.t
-    
-    if h.t == told:
-      if rank == 0:
-        print "psolve did not advance time from t=%.20g to tnext=%.20g\n"%(h.t, tnext)
-      break
-#    weight_file(params.filename+('.%d'%isaved))   
-    # save spikes and dictionary in a binary format to
-    # make them more comprimibles
-    import binsave
-    binsave.save(params.filename, spikevec, idvec)
-    
+  # if coreneuron is enabled, run it with coreneuron
+  if params.coreneuron:
+    from neuron import coreneuron
+    coreneuron.enable = True
+    coreneuron.gpu = params.gpu
+    if params.gpu:
+      coreneuron.cell_permute = 2
+      coreneuron.warp_balance = 2048
+    pc.psolve(tstop)
     h.spike2file(params.filename, spikevec, idvec, n_spkout_sort, n_spkout_files)
+  else:
+    # neuron execution
+    inittime = h.startsw() - inittime
+    print 'init time = %g'%inittime
+
+    while h.t < tstop:
+      told = h.t
+      tnext = h.t + checkpoint_interval
+
+      if tnext > tstop:
+        tnext = tstop
+
+      #if clean_weights_active:
+        #while tnext_clean < tnext:
+          #pc.psolve(tnext_clean)
+          #clean_weights()
+          #tnext_clean += clean_weights_interval
+
+      t = h.startsw()
+      pc.psolve(tnext)
+      solver_time += (h.startsw() - t)
+
+      #if rank == 0:
+        #print 'sim. checkpoint at %g' % h.t
+
+      if h.t == told:
+        if rank == 0:
+          print "psolve did not advance time from t=%.20g to tnext=%.20g\n"%(h.t, tnext)
+        break
+      # weight_file(params.filename+('.%d'%isaved))
+      # save spikes and dictionary in a binary format to
+      # make them more comprimibles
+      import binsave
+      binsave.save(params.filename, spikevec, idvec)
+      h.spike2file(params.filename, spikevec, idvec, n_spkout_sort, n_spkout_files)
+
+  # for cmparison with CoreNEURON, print psolve time
+  if rank == 0 and not params.coreneuron:
+    print 'Solver time : %g'% solver_time
   
   runtime = h.startsw() - runtime
   comptime = pc.step_time()

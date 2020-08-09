@@ -11,7 +11,9 @@ granAxisDw = [ bulbAxis[i]-1500 for i in range(3) ]
 
 GLOM_RADIUS = 50.
 
-
+# coreneuron parameters
+coreneuron = False
+gpu = False
 
 try:
     

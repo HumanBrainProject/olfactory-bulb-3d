@@ -7,6 +7,8 @@ from math import sqrt
 
 params.filename = 'bulb3dtest'
 params.tstop = 1050
+params.coreneuron = False
+params.gpu = False
 params.sniff_invl_min = params.sniff_invl_max = 500
 params.training_exc = params.training_inh = True
 from neuron import h

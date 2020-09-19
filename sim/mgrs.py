@@ -208,7 +208,7 @@ def mk_mgrs(mgid, isec, xm, ggid, ipri, xg, slot):
 def multiple_cnt():
   cnt = 0;
   for mgrs in list(getmodel().mgrss.values()):
-    if mgrs.slot > 0:
+    if mgrs.slot != 0: # slot is tuple not integer
       if mgrs.gd: cnt += 1
       if mgrs.md: cnt += 1
   return cnt

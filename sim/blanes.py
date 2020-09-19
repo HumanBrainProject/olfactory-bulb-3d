@@ -9,7 +9,7 @@ import params
 h.load_file('blanes.hoc')
 
 def load_blanes_dic(filename):
-    ggids_here = getmodel().granules.keys()
+    ggids_here = list(getmodel().granules.keys())
     blanes_here = set([x[1] for x in params.glom2blanes ])
     import struct
     with open(filename, 'rb') as fi:
@@ -33,7 +33,7 @@ def mk_gl2b_connections():
       w = None
     else:
       glomid, blanes_gid, w = x
-    if blanes_gid not in getmodel().blanes.keys():
+    if blanes_gid not in list(getmodel().blanes.keys()):
       continue
     for mtgid in range(glomid*params.Nmtufted_per_glom+params.gid_mtufted_begin, (glomid+1)*params.Nmtufted_per_glom+params.gid_mtufted_begin):
       getmodel().mt2blanes_connections.add((mtgid, blanes_gid, w))

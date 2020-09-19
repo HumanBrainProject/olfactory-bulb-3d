@@ -69,7 +69,7 @@ class MGRS:
     self.md2ampanmda = None #NetCon to ampanmda
 
     if pc.gid_exists(self.md_gid) > 0. or pc.gid_exists(self.gd_gid) > 0.:
-      print "md_gid=%d and/or gd_gid=%d already registered" % (self.md_gid, self.gd_gid)
+      print("md_gid=%d and/or gd_gid=%d already registered" % (self.md_gid, self.gd_gid))
       raise RuntimeError
 
     if self.msecden:
@@ -160,11 +160,11 @@ class MGRS:
       self.md2ampanmda.delay = 1
 
   def pr(self):
-    print "%d %d <-> %d %d"%(self.mgid, self.md_gid, self.gd_gid, self.ggid)
+    print("%d %d <-> %d %d"%(self.mgid, self.md_gid, self.gd_gid, self.ggid))
     if self.msecden:
-      print self.msecden.name(), self.md.hname(), self.fi.hname(), self.gd2fi.hname(), " ", int(self.gd2fi.srcgid())
+      print(self.msecden.name(), self.md.hname(), self.fi.hname(), self.gd2fi.hname(), " ", int(self.gd2fi.srcgid()))
     if self.gpriden:
-      print self.gpriden.name(), self.gd.hname(), self.ampanmda.hname(), self.md2ampanmda.hname(), " ", int(self.md2ampanmda.srcgid())
+      print(self.gpriden.name(), self.gd.hname(), self.ampanmda.hname(), self.md2ampanmda.hname(), " ", int(self.md2ampanmda.srcgid()))
 
 
   def mg_dic_str(self):
@@ -207,7 +207,7 @@ def mk_mgrs(mgid, isec, xm, ggid, ipri, xg, slot):
     
 def multiple_cnt():
   cnt = 0;
-  for mgrs in getmodel().mgrss.values():
+  for mgrs in list(getmodel().mgrss.values()):
     if mgrs.slot > 0:
       if mgrs.gd: cnt += 1
       if mgrs.md: cnt += 1

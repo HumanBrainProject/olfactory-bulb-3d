@@ -72,7 +72,7 @@ class OdorStim:
       dict exists (usually from determine_connections.py).
     ''' 
     if rank == 0:
-      print("OdorStim %s start=%g dur=%g conc=%g"%(odorname, start, dur, conc))
+      print(("OdorStim %s start=%g dur=%g conc=%g"%(odorname, start, dur, conc)))
     self.odorname = odorname
     self.start = start
     self.dur = dur
@@ -103,7 +103,7 @@ class OdorStim:
       src.invl_max = params.sniff_invl_max
       src.noiseFromRandom123(0, params.stream_orn_act, 0)
       self.src = src
-    for gid, cell in model.mitrals.items(): 
+    for gid, cell in list(model.mitrals.items()): 
       peak = self.w_odor[mgid2glom(gid)]
       if gidfunc.ismitral(gid):
         g_e_baseline = params.orn_g_mc_baseline
@@ -145,7 +145,7 @@ class OdorStim:
   def ev(self, time):
     ''' set odors stimulation intensity '''
     model = getmodel()
-    for gid, cell in model.mitrals.items():
+    for gid, cell in list(model.mitrals.items()):
       
       if gidfunc.ismitral(gid):
         g_e_baseline = params.orn_g_mc_baseline
@@ -163,11 +163,11 @@ class OdorStim:
           cell.ornsyn.o(i).g_e_max = g_e_max
           cell.ornsyn.o(i).std_e =  std_e
     
-    for nc in self.netcons.values():
+    for nc in list(self.netcons.values()):
       nc.event(h.t)
 
     if self.verbose and rank == 0:
-      print 'activation of %s at %g (ms)\tinterval %g' % (self.odorname, time, self.next_invl)
+      print('activation of %s at %g (ms)\tinterval %g' % (self.odorname, time, self.next_invl))
 
     # set up for next sniff
     self.next_invl = self.rng_act.repick()
@@ -193,4 +193,4 @@ if __name__ == '__main__':
   ods.setup(determine_connections.mitrals, 10., 20., 100.)
   h.tstop = 150
   h.run()
-  print 't=', h.t
+  print('t=', h.t)

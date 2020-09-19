@@ -14,7 +14,7 @@ import params
 params.tstop=1000
 import odorstim
 odorstim.Fmax['Mint'][37]=0.7
-for i in range(0, 37)+range(38,127):
+for i in list(range(0, 37))+list(range(38,127)):
   odorstim.Fmax['Mint'][i] = 0
 import net_mitral_centric as nmc # nmc.dc sets up full model gids
 from common import *
@@ -31,8 +31,8 @@ def subset_distrib(gids, model):
 
 subset_distrib(subset, model)
 
-print 'mitrals ', model.mitral_gids
-print 'granules ', model.granule_gids
+print('mitrals ', model.mitral_gids)
+print('granules ', model.granule_gids)
 
 def mksubset(model):
   nmc.dc.mk_mitrals(model)
@@ -45,7 +45,7 @@ def mksubset(model):
   nmc.build_synapses(model)
   import GJ
   GJ.init_gap_junctions()
-  if rank == 0: print "network subset setuptime ", h.startsw() - nmc.t_begin
+  if rank == 0: print("network subset setuptime ", h.startsw() - nmc.t_begin)
 
 def get_and_make_subset_connections():
   #get the needed info
@@ -60,7 +60,7 @@ def get_and_make_subset_connections():
     slot = mgrs.gid2mg(mdgid)[3]
     rs = mgrs.mk_mgrs(c[0], c[1], c[2], c[3], 0, c[4], slot)
     model.mgrss.update({rs.md_gid : rs})
-  print "%d mgrs created"%len(model.mgrss)
+  print("%d mgrs created"%len(model.mgrss))
 
 def chk_consist(md_dict, m_dict, g_dict):
   #Incomplete consistency check
@@ -70,17 +70,17 @@ def chk_consist(md_dict, m_dict, g_dict):
       if gid < nmitral:
         assert(gid == mgid)
       elif gid < ncell:
-        assert(g_dict.has_key(gid))
+        assert(gid in g_dict)
       else:
-        assert(md_dict.has_key(gid))
+        assert(gid in md_dict)
         subset.add(gid)
   for ggid in model.granule_gids:
-    if g_dict.has_key(ggid):
+    if ggid in g_dict:
       for gid in g_dict[ggid]:
-        assert(md_dict.has_key(gid+1))
+        assert(gid+1 in md_dict)
         subset.add(gid+1)
     else:
-      print 'granule %d was not used in full model'%ggid
+      print('granule %d was not used in full model'%ggid)
   return subset
 
 def patstim(filename):
@@ -93,7 +93,7 @@ def patstim(filename):
       wanted.add(rs.gd_gid)
     if rs.gd:
       wanted.add(rs.md_gid)
-  print wanted
+  print(wanted)
   # read the spiketimes
   from binspikes import SpikesReader
   sr = SpikesReader(filename)
@@ -101,7 +101,7 @@ def patstim(filename):
   # to verify that the subset simulation is same as full network sim.
   spk_standard = {}
   for gid in model.gids:
-    if sr.header.has_key(gid):
+    if gid in sr.header:
       spk_standard.update({gid : sr.retrieve(gid)})
     else:
       spk_standard.update({gid : []})
@@ -110,8 +110,8 @@ def patstim(filename):
   tvec = h.Vector()
   gidvec = h.Vector()
   for gid in wanted:
-    if not sr.header.has_key(gid):
-      print 'no spikes from %d'%gid
+    if gid not in sr.header:
+      print('no spikes from %d'%gid)
       continue
     spikes = sr.retrieve(gid)
     for t in spikes:
@@ -165,20 +165,20 @@ def spkcompare():
     if nstd < 0: nstd = len(tstd)
     nsim = len(tsim)
     if nstd != nsim:
-      print "\nFor gid %d, during interval 0 to tstop=%g, different numbers of spikes %d %d"%(gid, h.tstop, nstd, nsim)
-      print "tstd"
+      print("\nFor gid %d, during interval 0 to tstop=%g, different numbers of spikes %d %d"%(gid, h.tstop, nstd, nsim))
+      print("tstd")
       tstd.printf()
-      print "tsim"
+      print("tsim")
       tsim.printf()
       return nstd, nsim
     else:
       if tstd.c().sub(tsim).abs().indwhere(">", 1.e-6) == -1.0:
-        print "\n%d spike times for gid %d are the same"%(nstd, gid)
+        print("\n%d spike times for gid %d are the same"%(nstd, gid))
       else:
-        print "\n%d spike times for gid %d are different, tsim-tstd:"%(nstd, gid)
+        print("\n%d spike times for gid %d are different, tsim-tstd:"%(nstd, gid))
         tsim.c().sub(tstd).printf()
         for i in range(nstd):
-          print "%d %g %g"%(i, tstd.x[i], tsim.x[i])
+          print("%d %g %g"%(i, tstd.x[i], tsim.x[i]))
 
 h.load_file("nrngui.hoc")
 

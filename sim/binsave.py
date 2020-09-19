@@ -65,7 +65,7 @@ def save(prefix, t, g):
             fh.write(pack('>LL', gid, h))
 
         # output dictionary
-        for syn in getmodel().mgrss.values():
+        for syn in list(getmodel().mgrss.values()):
             if syn.md:
                 fdic.write(pack('>LLHfLf', syn.md_gid, syn.mgid, syn.isec, syn.xm, syn.ggid, syn.xg))
             

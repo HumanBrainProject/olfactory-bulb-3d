@@ -33,5 +33,5 @@ if __name__ == '__main__':
   if rank == 0:
     import params
     with open('../vis/granules.txt', 'w') as fo:
-      for gid, p in params.granules.ggid2pos.items():
+      for gid, p in list(params.granules.ggid2pos.items()):
         fo.write('%d %d %d %d 0\n'%((gid,)+p))

@@ -76,8 +76,8 @@ if __name__ == "__main__":
   x = h.startsw()
   # note 259 has tertiary branches
   for i in range(10):
-    print "mid=",i
+    print("mid=",i)
     cells.append(mkmitral(i))
-  print "wall time ", h.startsw() - x, " seconds"
+  print("wall time ", h.startsw() - x, " seconds")
   h.load_file('select.hoc')
   

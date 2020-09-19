@@ -49,7 +49,7 @@ def whole_cell_distrib(model):
   rr = {}
   for gid in model.gids:
     r = gid%nhost
-    if not rr.has_key(r):
+    if r not in rr:
       rr.update({r:[]})
     rr[r].append(gid);
   rr = all2all(rr)
@@ -63,7 +63,7 @@ def whole_cell_distrib(model):
   for r in gc:
     for ci in gc[r]:
       ggid = ci[3]
-      if not ggid2connection.has_key(ggid):
+      if ggid not in ggid2connection:
         ggid2connection.update({ggid:[]})
       ggid2connection[ggid].append(ci)
   for r in rr:
@@ -71,7 +71,7 @@ def whole_cell_distrib(model):
     mgci = []
     rr[r] = mgci
     for gid in gids:
-      if mc.has_key(gid):
+      if gid in mc:
         mgci.append(mc[gid])
       else:
         mgci.append(ggid2connection[gid])
@@ -88,13 +88,13 @@ def whole_cell_distrib(model):
   for r in mgci:
     for cil in mgci[r]:
       for ci in cil:
-        if not model.mgrss.has_key(mgrs.mgrs_gid(ci[0], ci[3], ci[6])):
+        if mgrs.mgrs_gid(ci[0], ci[3], ci[6]) not in model.mgrss:
           rsyn = mgrs.mk_mgrs(*ci[0:7])
           if rsyn:
             model.mgrss.update({rsyn.md_gid : rsyn})
   nmultiple = int(pc.allreduce(mgrs.multiple_cnt(), 1))
   if rank == 0:
-    print 'nmultiple = ', nmultiple
+    print('nmultiple = ', nmultiple)
   detectors = h.List("ThreshDetect")
   util.elapsed('%d ThreshDetect for reciprocalsynapses constructed'%int(pc.allreduce(detectors.count(),1)))
-  if rank == 0: print 'whole_cell_distrib time ', h.startsw() - enter
+  if rank == 0: print('whole_cell_distrib time ', h.startsw() - enter)

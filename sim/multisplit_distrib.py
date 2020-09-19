@@ -60,7 +60,7 @@ def multisplit_distrib(model):
   for item in cxlist:
     gid = item[1][0]
     piece = item[1][1]
-    if not gid2pieces.has_key(gid):
+    if gid not in gid2pieces:
       gid2pieces.update({gid:[]})
     gid2pieces[gid].append(piece)
 
@@ -69,7 +69,7 @@ def multisplit_distrib(model):
   rr = {}
   for gid in model.gids:
     r = gid%nhost
-    if not rr.has_key(r):
+    if r not in rr:
       rr.update({r:[]})
     rr[r].append(gid);
   rr = all2all(rr)
@@ -86,7 +86,7 @@ def multisplit_distrib(model):
   for r in gc:
     for ci in gc[r]:
       ggid = ci[3]
-      if not ggid2connection.has_key(ggid):
+      if ggid not in ggid2connection:
         ggid2connection.update({ggid:[]})
       ggid2connection[ggid].append(ci)
       
@@ -96,7 +96,7 @@ def multisplit_distrib(model):
     rr[r] = mgci
     for gid in gids:
 
-      if mc.has_key(gid):
+      if gid in mc:
         mgci.append(mc[gid])
       elif gidfunc.isgranule(gid):
         mgci.append(ggid2connection[gid])
@@ -126,7 +126,7 @@ def multisplit_distrib(model):
   for r in mgci:
     for cil in mgci[r]:
       for ci in cil:
-        if not model.mgrss.has_key(mgrs.mgrs_gid(ci[0], ci[3], ci[6])):
+        if mgrs.mgrs_gid(ci[0], ci[3], ci[6]) not in model.mgrss:
           rsyn = mgrs.mk_mgrs(*ci[0:7])
           if rsyn:
             model.mgrss.update({rsyn.md_gid : rsyn})
@@ -147,7 +147,7 @@ def multisplit_distrib(model):
     model.blanes2gc[syn.gid] = syn
         
   if rank == 0:
-    print 'nmultiple = ', nmultiple
+    print('nmultiple = ', nmultiple)
   detectors = h.List("AmpaNmda")
   util.elapsed('%d ampanmda for reciprocalsynapses constructed'%int(pc.allreduce(detectors.count(),1)))
   detectors = h.List("FastInhib")
@@ -157,6 +157,6 @@ def multisplit_distrib(model):
   util.elapsed('%d mt to bc' % int(pc.allreduce(len(model.mt2blanes),1)))
   util.elapsed('%d bc to gc' % int(pc.allreduce(len(model.blanes2gc),1)))
 
-  if rank == 0: print 'multisplit_distrib time ', h.startsw() - enter
+  if rank == 0: print('multisplit_distrib time ', h.startsw() - enter)
 
  

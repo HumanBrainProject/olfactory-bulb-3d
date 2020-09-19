@@ -43,7 +43,7 @@ for i in range(1, 5):
     ce = column_eval(data, 37)[0][1]
     ri = (imp[gl1] + imp[gl2])/2 #)-imp[37])/imp[37]
     x = cas(37,gl1,gl2) #log(cas(37,gl1,gl2)/((cas(gl1,37,gl2)+cas(gl2,37,gl1))/2.0))
-    print i, j, gl1, gl2, x, ri, ce
+    print(i, j, gl1, gl2, x, ri, ce)
     fo.write('%d %d %g %g %g\n'%(gl1, gl2, x, ri, ce[0]))
     index += 1
 fo.close()

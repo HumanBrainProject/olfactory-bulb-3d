@@ -23,7 +23,7 @@ def init():
   up = misc.Ellipsoid(params.bulbCenter, params.granAxisUp)
   dw = misc.Ellipsoid(params.bulbCenter, params.granAxisDw)
   
-  for p, ggid in granules.pos2ggid.items():
+  for p, ggid in list(granules.pos2ggid.items()):
     
     rng_type = params.ranstream(ggid, params.stream_granule_type)
     if rng_type.uniform(0, 1) < params.gc_type3_prob:
@@ -186,7 +186,7 @@ if __name__ == '__main__':
 
   def ggid2type_save(filename):
     with open(filename, 'w') as fo:
-      for gpos, gtype in pos2type.items():
+      for gpos, gtype in list(pos2type.items()):
         fo.write('%d %d\n' % (granules.pos2ggid[gpos], \
                             gtype) \
                  )
@@ -194,11 +194,11 @@ if __name__ == '__main__':
   ggid2type_save('../bulbvis/ggid2type.txt')
 
   with open('../bulbvis/granules.txt', 'w') as fo:
-    for ggid, p in granules.ggid2pos.items():
+    for ggid, p in list(granules.ggid2pos.items()):
       fo.write('%d ' % ggid)
       fo.write('%g %g %g '% p)
       fo.write('%d\n' % 0)
   n = [0]*3
-  for gtype in pos2type.values(): n[gtype]+=1
-  print n
-  print 'saved'
+  for gtype in list(pos2type.values()): n[gtype]+=1
+  print(n)
+  print('saved')

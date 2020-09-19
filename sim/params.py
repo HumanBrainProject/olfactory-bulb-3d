@@ -47,7 +47,7 @@ def load_params(_filename):
           glom2blanes.append((int(tk[0]), int(tk[1])))
           l = fi.readline()
     except:
-      print 'error during params import'
+      print('error during params import')
 
 from copy import copy
 from math import pi, sqrt

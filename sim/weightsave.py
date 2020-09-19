@@ -5,7 +5,7 @@ from common import getmodel
 
 def weight_reset():
   model = getmodel()
-  for rsyn in model.mgrss.values():
+  for rsyn in list(model.mgrss.values()):
     if rsyn.gd2fi:
       rsyn.gd2fi.weight[1] = 0
     if rsyn.md2ampanmda:
@@ -27,7 +27,7 @@ def weight_load(filename):
       inhib = False
 
     # has key
-    if model.mgrss.has_key(gid):
+    if gid in model.mgrss:
       rsyn = model.mgrss[gid]
       
       if inhib and rsyn.gd2fi:
@@ -62,4 +62,4 @@ def weight_file(prefix):
     f.close()
     #fdic.close()
     
-  if rank == 0 : print "weight_files %s.[0:%d] write time %g s" % (prefix, ng, h.startsw()-wtime)
+  if rank == 0 : print("weight_files %s.[0:%d] write time %g s" % (prefix, ng, h.startsw()-wtime))

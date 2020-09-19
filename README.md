@@ -2,7 +2,7 @@ WIP
 
 ### How to run this model
 
-Make sure you have neuron with Python2 is installed (or neuron module loaded). You can then compile mod files as:
+Make sure you have neuron with Python3 installed (or neuron module loaded). You can then compile mod files as:
 
 ```
 cd sim

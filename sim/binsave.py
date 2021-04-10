@@ -40,7 +40,7 @@ def save(prefix, t, g):
 
 
 
-    ngroup = nhost / max(nhost / 64, 1)
+    ngroup = int(nhost / max(nhost / 64, 1))
     for rg, rp in group_serialize(ngroup):
         
         fname_data = '%s.sbg.%04d' % (prefix, rg)

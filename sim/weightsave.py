@@ -42,7 +42,7 @@ def weight_load(filename):
 def weight_file(prefix):
   wtime = h.startsw()
   mingroupsize = max(nhost/64, 1)
-  ng = nhost/mingroupsize
+  ng = int(nhost/mingroupsize)
   for r in group_serialize(ng):
     name = prefix + '.' + str(r[0])
     

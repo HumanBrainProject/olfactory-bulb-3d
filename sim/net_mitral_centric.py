@@ -78,7 +78,7 @@ def build_granules(model):
   model.granules = {}
   for gid in model.granule_gids:
     g = mkgranule(gid)    
-    model.granules.update({gid : g})
+    model.granules[gid] = g
   elapsed('%d granules built'%int(pc.allreduce(len(model.granules),1)))
 
 def register_granules(model):
@@ -95,14 +95,14 @@ def build_synapses(model):
     for ci in model.rank_gconnections[r]:
       rsyn = mgrs.mk_mgrs(*ci[0:7])
       if rsyn:
-        model.mgrss.update({rsyn.md_gid : rsyn})
+        model.mgrss[rsyn.md_gid] = rsyn
   for mgid in model.mconnections:
     for ci in model.mconnections[mgid]:
       #do not duplicate if already built because granule exists on this process
       if not model.mgrss.has_key(mgrs.mgrs_gid(ci[0], ci[3], ci[6])):
         rsyn = mgrs.mk_mgrs(*ci[0:7])
         if rsyn:
-          model.mgrss.update({rsyn.md_gid : rsyn})
+          model.mgrss[rsyn.md_gid] = rsyn
   nmultiple = int(pc.allreduce(mgrs.multiple_cnt(), 1))
   if rank == 0:
     print 'nmultiple = ', nmultiple
@@ -135,7 +135,7 @@ def read_mconnection_info(model, connection_file):
       slot = 0 #mgrs.gid2mg(md_gid)[3]
       cinfo = (mgid, isec, xm, ggid, 0, xg, slot, (0.,0.,0.))
       if not model.mconnections.has_key(mgid):
-        model.mconnections.update({ mgid:[] })
+        model.mconnections[mgid] = []
       model.mconnections[mgid].append(cinfo)
     rec = fi.read(22)
   fi.close()

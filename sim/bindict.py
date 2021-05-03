@@ -31,7 +31,7 @@ def load(fname = None):
             s = set()
             if addkey:
                 s.add(key)
-            dic.update({ key:s })
+            dic[key] = s
 
         # update
         s.update(set(arg))
@@ -58,7 +58,7 @@ def load(fname = None):
                     gid_dict[gid + 1] = entry
                     add(mgid_dict, entry[0], True, gid, entry[3])
                 else:
-                    gid_dict.update({ gid:entry })
+                    gid_dict.[gid] = entry
                     
                 # add to granule dict
                 add(ggid_dict, ggid, False, gid)
@@ -72,7 +72,7 @@ def load(fname = None):
                     add(mgid_dict, entry[0], True, gid, entry_odd[0])
                 except KeyError:
                     pass
-                gid_dict.update({ gid:entry })
+                gid_dict[gid] = entry
                 
             line = f.readline()
         f.close()
@@ -83,7 +83,7 @@ def load(fname = None):
         while rec:
             # read one record
             mg_gid, mgid, isec, xm, ggid, xg = unpack('>LLHfLf', rec)
-            gid_dict.update({ mg_gid:(mgid, isec, xm, ggid, 0, xg) })
+            gid_dict[mg_gid] = (mgid, isec, xm, ggid, 0, xg)
             add(ggid_dict, ggid, False, mg_gid - 1)
             add(mgid_dict, mgid, True, mg_gid, ggid)
             rec = f.read(22)
@@ -142,7 +142,7 @@ def mknetwork(gloms=[]):
 
             if not mgid_dict.has_key(mgid):
                 gids = []
-                mgid_dict.update({ mgid:gids })
+                mgid_dict[mgid] = gids
             else:
                 gids = mgid_dict[mgid]
 
@@ -151,11 +151,11 @@ def mknetwork(gloms=[]):
             gids.append(ggid)
             gids.append(syngid)
 
-            gid_dict.update({ syngid:_ci })
+            gid_dict[syngid] = _ci
 
             if not ggid_dict.has_key(ggid):
                 gids = []
-                ggid_dict.update({ ggid:gids })
+                ggid_dict[ggid] = gids
             else:
                 gids = ggid_dict[ggid]
 

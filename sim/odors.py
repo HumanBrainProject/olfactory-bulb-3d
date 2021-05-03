@@ -42,7 +42,7 @@ def init(kfilename, etafilename):
   
   for l in fileinput.input(etafilename):
     data = l.split('\t')
-    odors.update({ data[0]: odor(data[0], [ float(x) for x in data[1:] ], []) })
+    odors[data[0]] = odor(data[0], [ float(x) for x in data[1:] ], [])
     
   for l in fileinput.input(kfilename):
     data = l.split('\t')

@@ -19,7 +19,7 @@ gj_max_g2=0.001
 def init():
     data = {}
     for uid in range(nhost):
-      data.update({ uid:(getmodel().mitrals.keys()) })
+      data[uid] = getmodel().mitrals.keys()
     data = a2a.all2all(data)
     mgids = []
     for _mgids in data.values(): mgids += _mgids

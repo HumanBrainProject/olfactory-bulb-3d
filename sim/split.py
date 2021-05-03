@@ -90,7 +90,7 @@ def secden_indices_connected_to_soma(cell):
 
 def wholemitral(mgid, cell):
   ''' unsplit mitral cell '''
-  model.mgid2piece.update({mgid:cell})
+  model.mgid2piece[mgid] = cell
 
 def splitmitral(mgid, cell, piecelist):
   ''' split a mitral cell into secondary dendrites and the soma/priden/axon
@@ -128,7 +128,7 @@ def splitmitral(mgid, cell, piecelist):
 
         
   # add to piece dictionary
-  model.mgid2piece.update({mgid:cell})
+  model.mgid2piece[mgid] = cell
 
 def subset_complexity(subset):
   cx = 0.

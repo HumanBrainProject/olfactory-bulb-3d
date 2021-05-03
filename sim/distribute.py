@@ -50,7 +50,7 @@ def whole_cell_distrib(model):
   for gid in model.gids:
     r = gid%nhost
     if not rr.has_key(r):
-      rr.update({r:[]})
+      rr[r] = []
     rr[r].append(gid);
   rr = all2all(rr)
   # rr is now the ranks for where to send the synapse information
@@ -64,7 +64,7 @@ def whole_cell_distrib(model):
     for ci in gc[r]:
       ggid = ci[3]
       if not ggid2connection.has_key(ggid):
-        ggid2connection.update({ggid:[]})
+        ggid2connection[ggid] = []
       ggid2connection[ggid].append(ci)
   for r in rr:
     gids = rr[r]
@@ -91,7 +91,7 @@ def whole_cell_distrib(model):
         if not model.mgrss.has_key(mgrs.mgrs_gid(ci[0], ci[3], ci[6])):
           rsyn = mgrs.mk_mgrs(*ci[0:7])
           if rsyn:
-            model.mgrss.update({rsyn.md_gid : rsyn})
+            model.mgrss[rsyn.md_gid] = rsyn
   nmultiple = int(pc.allreduce(mgrs.multiple_cnt(), 1))
   if rank == 0:
     print 'nmultiple = ', nmultiple

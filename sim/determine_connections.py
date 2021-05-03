@@ -225,7 +225,7 @@ def mk_mitrals(model):
   model.mitrals = {}
   for gid in model.mitral_gids:
     m = mkmitral.mkmitral(gid)
-    model.mitrals.update({gid : m})
+    model.mitrals[gid] = m
   util.elapsed('%d mitrals created and connections to mitrals determined'%int(pc.allreduce(len(model.mitrals),1)))
 
 def mk_gconnection_info_part1(model):
@@ -240,7 +240,7 @@ def mk_gconnection_info_part1(model):
       ggid = ci[3]
       r = gid2rank(ggid)
       if not model.rank_gconnections.has_key(r):
-        model.rank_gconnections.update({r : []})
+        model.rank_gconnections[r] = []
       model.rank_gconnections[r].append(ci)
 
 def mk_gconnection_info_part2(model):

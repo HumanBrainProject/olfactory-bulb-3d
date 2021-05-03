@@ -38,7 +38,7 @@ def init():
         gtype = 0 # right type for mitral only
       else:
         gtype = 2 # right type for mid. tufted only 
-    pos2type.update({ p:gtype })
+    pos2type[p] = gtype
     
   
   # initialize the voxel grid to connect segment to granule cells

@@ -20,7 +20,7 @@ fi.close()
 
 fo1=open(filespk+'.sbgh','wb')
 fo=open(filespk+'.sbg','wb')
-for gid, tspks in m.items():
+for gid, tspks in list(m.items()):
   fo.write(pack('>LL',gid,len(tspks)))
   for x in tspks:
     fo1.write(pack('>f',x))

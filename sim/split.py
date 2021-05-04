@@ -37,7 +37,7 @@ model = getmodel()
 
 
 def mpiece_exists(mgid):
-  return model.mgid2piece.has_key(mgid)
+  return mgid in model.mgid2piece
 
 def mgid2pieces(mgid):
   ''' return cell with existing pieces for mgid; None if does not exist.'''
@@ -183,10 +183,10 @@ if __name__ == "__main__":
   from mkmitral import mkmitral
   gid = 259
   mcell = mkmitral(gid) # according to mkmitral.py this has tertiary branches
-  print "mitral_complexity ", mitral_complexity(mcell)
-  print "cell_complexity = ", lb.cell_complexity(mcell)
+  print("mitral_complexity ", mitral_complexity(mcell))
+  print("cell_complexity = ", lb.cell_complexity(mcell))
   pieces = secden_indices_connected_to_soma(mcell)
   pieces.append(-1)
   splitmitral(gid, mcell, pieces)
   h.topology()
-  print "mgid2piece ", model.mgid2piece
+  print("mgid2piece ", model.mgid2piece)

@@ -148,7 +148,7 @@ def genFalseGloms():
         allGloms.append(newGl)
         
     while len(allGloms) < N_TOTAL_GLOMS:
-        print "Gloms are ", len(allGloms)
+        print("Gloms are ", len(allGloms))
         newGl, dep = genGlom()
         while noGood(newGl, dep, False):
             newGl, dep = genGlom()

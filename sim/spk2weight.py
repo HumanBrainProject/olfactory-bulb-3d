@@ -6,8 +6,8 @@ import bindict
 bindict.load('../../bulbvis/fullbulb-oldtraining-nomt.dic')
 tcut=None
 import mgrs
-mgid = range(37*5,37*5+5)
-for g, info in bindict.gid_dict.items():
+mgid = list(range(37*5,37*5+5))
+for g, info in list(bindict.gid_dict.items()):
   if info[0] not in mgid:
     continue
   try:
@@ -32,4 +32,4 @@ for g, info in bindict.gid_dict.items():
     w=0
   fo.write('%d %d %g\n' % (g,w,0))
 fo.close()
-print 'done'
+print('done')

@@ -146,7 +146,7 @@ class SpikesReader:
           for j in range(hlen):
             gid, n = unpack('>LL', self.fi.read(8)) # read
 
-            if not self.header.has_key(gid):
+            if gid not in self.header:
               self.header[gid] = [(offset, n)]
             else:
               self.header[gid].append((offset, n)) 
@@ -236,14 +236,14 @@ class SpikesReader:
         if gid < gid_mgrs_begin:
             return None
         if gid%2!=0 and params.use_fi_stdp:
-          if self.__initweights.has_key(gid):
+          if gid in self.__initweights:
             wi=self.__initweights[gid] 
           else:
             wi=0
           tpre=[0.]
-          if self.header.has_key(gid): tpre += self.retrieve(gid)
+          if gid in self.header: tpre += self.retrieve(gid)
           tpost=[0.]
-          if self.header.has_key(gid): tpost += self.retrieve(gid+1)
+          if gid in self.header: tpost += self.retrieve(gid+1)
           t,w = hebbian(wi,tpre,tpost)
           return t,w         
         else:        
@@ -315,7 +315,7 @@ class SpikesWriter:
     
     # write header
     fo = open(self.filename + '.header', 'wb')
-    for x in self.header.items():
+    for x in list(self.header.items()):
       fo.write(pack('>LL', x))
     fo.close()
     

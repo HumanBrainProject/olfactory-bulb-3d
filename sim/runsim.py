@@ -16,7 +16,7 @@ import net_mitral_centric as nmc
 from odorstim import OdorStim
 import gapjunc
 def build_complete_model(dicfile=''):
-  build_part_model(range(params.Ngloms), [], dicfile)
+  build_part_model(list(range(params.Ngloms)), [], dicfile)
   
 def build_part_model(gloms, mitrals, dicfile=''):
 
@@ -26,8 +26,8 @@ def build_part_model(gloms, mitrals, dicfile=''):
   # gids
   gids = set()
   for glomid in gloms:
-    gids.update(range(glomid * params.Nmitral_per_glom, (glomid+1) * params.Nmitral_per_glom) + \
-                range(glomid * params.Nmtufted_per_glom + params.gid_mtufted_begin, (glomid+1) * params.Nmtufted_per_glom + params.gid_mtufted_begin))
+    gids.update(list(range(glomid * params.Nmitral_per_glom, (glomid+1) * params.Nmitral_per_glom)) + \
+                list(range(glomid * params.Nmtufted_per_glom + params.gid_mtufted_begin, (glomid+1) * params.Nmtufted_per_glom + params.gid_mtufted_begin)))
   gids.update(mitrals)
   
   # distribute
@@ -52,12 +52,12 @@ def build_part_model(gloms, mitrals, dicfile=''):
   # print sections
   nc = h.List("NetCon")
   nc = int(pc.allreduce(nc.count(),1))
-  if rank == 0: print "NetCon count = ", nc
+  if rank == 0: print("NetCon count = ", nc)
   nseg = 0
   for sec in h.allsec():
     nseg += sec.nseg
   nseg = int(pc.allreduce(nseg, 1))
-  if rank == 0: print "Total # compartments = ", nseg
+  if rank == 0: print("Total # compartments = ", nseg)
 
   pc.spike_record(-1, parrun.spikevec, parrun.idvec)
   util.show_progress(200)
@@ -71,7 +71,7 @@ def build_part_model(gloms, mitrals, dicfile=''):
     vr.record(*rec)
 
 
-  if rank == 0: print 'total setup time ', h.startsw()-startsw
+  if rank == 0: print('total setup time ', h.startsw()-startsw)
 
 
 

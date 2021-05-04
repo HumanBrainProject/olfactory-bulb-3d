@@ -99,13 +99,13 @@ def build_synapses(model):
   for mgid in model.mconnections:
     for ci in model.mconnections[mgid]:
       #do not duplicate if already built because granule exists on this process
-      if not model.mgrss.has_key(mgrs.mgrs_gid(ci[0], ci[3], ci[6])):
+      if mgrs.mgrs_gid(ci[0], ci[3], ci[6]) not in model.mgrss:
         rsyn = mgrs.mk_mgrs(*ci[0:7])
         if rsyn:
           model.mgrss[rsyn.md_gid] = rsyn
   nmultiple = int(pc.allreduce(mgrs.multiple_cnt(), 1))
   if rank == 0:
-    print 'nmultiple = ', nmultiple
+    print('nmultiple = ', nmultiple)
   detectors = h.List("ThreshDetect")
   elapsed('%d ThreshDetect for reciprocalsynapses constructed'%int(pc.allreduce(detectors.count(),1)))
 
@@ -134,7 +134,7 @@ def read_mconnection_info(model, connection_file):
     if mgid in model.mitral_gids:
       slot = 0 #mgrs.gid2mg(md_gid)[3]
       cinfo = (mgid, isec, xm, ggid, 0, xg, slot, (0.,0.,0.))
-      if not model.mconnections.has_key(mgid):
+      if mgid not in model.mconnections:
         model.mconnections[mgid] = []
       model.mconnections[mgid].append(cinfo)
     rec = fi.read(22)
@@ -166,7 +166,7 @@ def build_net_round_robin(model, mitral_gids=set(range(params.Nmitral)), connect
   else:
     dc.mk_mconnection_info(model)  
   build_round_robin(model)  
-  if rank == 0: print 'build_subnet_round_robin ', h.startsw()-enter
+  if rank == 0: print('build_subnet_round_robin ', h.startsw()-enter)
   
 
 def build_round_robin(model):
@@ -189,7 +189,7 @@ def build_round_robin(model):
   build_synapses(model)
    
   elapsed('build_net_round_robin')
-  if rank == 0: print "round robin setuptime ", h.startsw() - t_begin
+  if rank == 0: print("round robin setuptime ", h.startsw() - t_begin)
 
 #build_net_round_robin(getmodel())
 
@@ -197,4 +197,4 @@ if __name__ == '__main__':
   from util import serialize
   model = getmodel()
   for r in serialize():
-    print "rank %d  %d mitrals  %d granules  %d MGRS nmultiple=%d max_multiple=%d" % (r,len(model.mitrals),len(model.granules), len(mgrss), mgrs.nmultiple, mgrs.max_multiple)
+    print("rank %d  %d mitrals  %d granules  %d MGRS nmultiple=%d max_multiple=%d" % (r,len(model.mitrals),len(model.granules), len(mgrss), mgrs.nmultiple, mgrs.max_multiple))

@@ -31,7 +31,7 @@ def chk_gran_conn():
   # for each granule, list of all mgid it connects to and vice versa
   g2m = {}
   m2g = {}
-  for mgrs in mgrss.values():
+  for mgrs in list(mgrss.values()):
     ggid = mgrs.ggid
     mgid = mgrs.mgid
     if mgrs.gd: # granule exists on this rank
@@ -45,7 +45,7 @@ def chk_gran_conn():
 
   a='Number of granules that go to mitral and mtufted (regardless of glomerulus)'
   na = 0
-  for ms in g2m.values():
+  for ms in list(g2m.values()):
     nmit = 0
     nmtuft = 0
     for mgid in ms:
@@ -54,13 +54,13 @@ def chk_gran_conn():
     na += 1 if nmit > 0 and nmtuft > 0 else 0
   na = int(pc.allreduce(na, 1))
   if pc.id() == 0:
-    print("%d %s" %(na, a))
+    print(("%d %s" %(na, a)))
 
   a='[total,imin,imax,iavg,xmin,xmax,xavg] granule connections to mitral'
   b='[total,imin,imax,iavg,xmin,xmax,xavg] granule connections to mtuft'
   nab=[[[],[],[],[]],[[],[],[],[]]]
 
-  for ms in g2m.values():
+  for ms in list(g2m.values()):
     # assume if first is mitral then all are mitrals otherwise mtuft
     dat = nab[0] if gidfunc.ismitral(ms[0]) else nab[1]
 

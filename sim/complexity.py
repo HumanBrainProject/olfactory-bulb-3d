@@ -30,7 +30,7 @@ def test():
   for i in cx:
      total_cx += i[0]
   total_cx = pc.allreduce(total_cx, 1)
-  if rank == 0: print 'total_cx=',total_cx
+  if rank == 0: print('total_cx=',total_cx)
   elapsed('write_cx_file')
 
 if __name__ == '__main__':

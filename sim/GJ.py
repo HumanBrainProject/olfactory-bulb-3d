@@ -24,7 +24,7 @@ def init_gap_junctions():
         mpriden = split.mpriden(mgid)
         if mpriden:
             glomid = mgid/nmxg
-            for sistermgid in range(glomid * nmxg, mgid)+range(mgid+1, (glomid+1)*nmxg):
+            for sistermgid in list(range(glomid * nmxg, mgid))+list(range(mgid+1, (glomid+1)*nmxg)):
                 if pc.gid_exists(sistermgid) > 0:
                     gap = h.Gap(mpriden(0.99))
                     if sistermgid != 189:

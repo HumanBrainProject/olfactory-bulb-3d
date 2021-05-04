@@ -20,7 +20,7 @@ def load_bal(cx, npart):
     parts = lpt(c, npart)
     print(statistics(parts))
     for i,p in enumerate(parts):
-      s.update({i : p[1]})
+      s[i] = p[1]
   else:
     del r
   #send each partition to the proper rank

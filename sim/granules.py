@@ -22,8 +22,8 @@ def init(center, upbnd, dwbnd, d, gid_granule_begin):
         if up.normalRadius(p) < 1.0 and dw.normalRadius(p) >= 1.0: # inside boundaries
           ggid = gid_granule_begin+gindex
               
-          ggid2pos.update({ ggid:p })
-          pos2ggid.update({ p:ggid })
+          ggid2pos[ggid] = p
+          pos2ggid[p] = ggid
           
           gindex += 1
 

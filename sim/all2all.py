@@ -38,7 +38,7 @@ def _all2all(data, size=0):
     z = {}
     for i,x in enumerate(d):
       if x != None:
-        z.update({i : x})
+        z[i] = x
     return z
   raise ValueError
 

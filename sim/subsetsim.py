@@ -59,7 +59,7 @@ def get_and_make_subset_connections():
     c = bindict.gid_dict[mdgid]
     slot = mgrs.gid2mg(mdgid)[3]
     rs = mgrs.mk_mgrs(c[0], c[1], c[2], c[3], 0, c[4], slot)
-    model.mgrss.update({rs.md_gid : rs})
+    model.mgrss[rs.md_gid] = rs
   print("%d mgrs created"%len(model.mgrss))
 
 def chk_consist(md_dict, m_dict, g_dict):
@@ -102,9 +102,9 @@ def patstim(filename):
   spk_standard = {}
   for gid in model.gids:
     if gid in sr.header:
-      spk_standard.update({gid : sr.retrieve(gid)})
+      spk_standard[gid] = sr.retrieve(gid)
     else:
-      spk_standard.update({gid : []})
+      spk_standard[gid] = []
   # now get all the spikes we need for input (will include the cell output
   # spikes but that can also be helpful for debugging)
   tvec = h.Vector()
@@ -205,7 +205,7 @@ if __name__ == '__nothing__':
     h.addplot(g, 0)
     g.size(0, h.tstop, -80, 60)
     g.addvar('gid%d.soma.v(.5)'%gid, pc.gid2cell(gid).soma(.5)._ref_v)
-    grphs.update({gid : g})
+    grphs[gid] = g
   h.run()
   spkcompare()
 h.load_file('subsetsim.ses')

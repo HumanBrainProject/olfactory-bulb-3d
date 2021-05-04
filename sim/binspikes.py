@@ -122,7 +122,7 @@ class SpikesReader:
             gid, s = line.split()[:2]
             gid = int(gid)
             s = int(s)
-            self.__initweights.update({ gid:s })
+            self.__initweights[gid] = s
             line = f.readline()
           f.close()
           
@@ -147,7 +147,7 @@ class SpikesReader:
             gid, n = unpack('>LL', self.fi.read(8)) # read
 
             if gid not in self.header:
-              self.header.update({ gid:[(offset, n)] })
+              self.header[gid] = [(offset, n)]
             else:
               self.header[gid].append((offset, n)) 
 
@@ -199,7 +199,7 @@ class SpikesReader:
             if self.sort:
               t = sorted(t)
             self.__old.append(gid)    
-            self.__cache.update({ gid:t })
+            self.__cache[gid] = t
 
         from copy import copy
         return copy(self.__cache[gid])

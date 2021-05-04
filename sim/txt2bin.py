@@ -14,7 +14,7 @@ while line:
     if gid in m:
       m[gid].append(t)
     else:
-      m.update({gid:[t]})
+      m[gid] = [t]
   line=fi.readline()
 fi.close()
 

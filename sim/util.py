@@ -49,7 +49,8 @@ def progress(pinvl, swlast):
   h.cvode.event(h.t+pinvl, (progress, (pinvl , sw)))
 
 def show_progress(invl):
-  return
+  if params.coreneuron:
+    return
   global fih
   if rank == 0:
     fih = h.FInitializeHandler(2, (progress, (invl, h.startsw())))

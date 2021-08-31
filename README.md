@@ -70,7 +70,7 @@ module load spectrum_mpi/10.3.1--binary boost/1.72.0--spectrum_mpi--10.3.1--bina
 export PYTHONPATH=/m100_work/Pra18_4575_0/software/gpu/install/lib64/python/:$PYTHONPATH
 
 # gpu run with coreneuron
-mpirun ./special_wrapper.ppc64 -python -mpi bulb3dtest.py
+mpirun ./special_wrapper.ppc64 -python -mpi bulb3dtest.py 1050 1 1 0 output
 ```
 
 Note that we are using `special_wrapper.ppc64` instead of `ppc64le/special` as a binary to launch. This is because [MPS](https://docs.nvidia.com/deploy/pdf/CUDA_Multi_Process_Service_Overview.pdf) service is currently not enabled on Marconi100. Using wrapper script, we start the MPS service before launching an application.

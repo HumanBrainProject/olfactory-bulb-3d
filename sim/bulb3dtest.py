@@ -1,16 +1,18 @@
 import params
-
-
 import runsim
 import odors
+import sys
 from math import sqrt
 
-params.filename = 'bulb3dtest'
-params.tstop = 1050
-params.coreneuron = False
-params.gpu = False
+params.tstop = int(sys.argv[-5])
+params.coreneuron = bool(int(sys.argv[-4]))
+params.gpu = bool(int(sys.argv[-3]))
+params.filemode = bool(int(sys.argv[-2]))
+params.filename = sys.argv[-1]
+
 params.sniff_invl_min = params.sniff_invl_max = 500
 params.training_exc = params.training_inh = True
+
 from neuron import h
 h('sigslope_AmpaNmda=5')
 h('sigslope_FastInhib=5')

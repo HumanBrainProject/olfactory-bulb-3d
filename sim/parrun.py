@@ -48,6 +48,7 @@ def prun(tstop):
   if params.coreneuron:
     from neuron import coreneuron
     coreneuron.enable = True
+    coreneuron.filemode = params.filemode
     coreneuron.gpu = params.gpu
     if params.gpu:
       coreneuron.cell_permute = 2

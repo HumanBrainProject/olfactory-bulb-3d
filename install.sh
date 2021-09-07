@@ -176,6 +176,32 @@ install_nrn_cnrn_cpu_nmodl() {
         -DCORENRN_ENABLE_GPU=OFF \
         -DCORENRN_ENABLE_NMODL=ON \
         -DCORENRN_NMODL_DIR=$INSTALL_DIR/NMODL \
+        -DNRN_ENABLE_PYTHON=ON \
+        -DPYTHON_EXECUTABLE=$(which python3) \
+        -DNRN_ENABLE_TESTS=OFF \
+        -DCORENRN_ENABLE_UNIT_TESTS=OFF \
+        -DCMAKE_C_COMPILER=$CC \
+        -DCMAKE_CXX_COMPILER=$CXX \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    make -j && make install
+    popd
+    unload_intel
+}
+
+install_nrn_cnrn_cpu_nmodl_sympy() {
+    printf "\n----------------- INSTALL NEURON+CORENEURON+NMODL (CPU) --------------\n"
+    load_intel
+    mkdir -p $BUILD_DIR/nrn_cnrn_cpu_nmodl_sympy && pushd $BUILD_DIR/nrn_cnrn_cpu_nmodl_sympy
+    cmake $SOURCE_DIR/nrn \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/nrn_cnrn_cpu_nmodl_sympy \
+        -DNRN_ENABLE_INTERVIEWS=OFF \
+        -DNRN_ENABLE_RX3D=OFF \
+        -DNRN_ENABLE_MPI=ON \
+        -DCORENRN_ENABLE_OPENMP=OFF \
+        -DNRN_ENABLE_CORENEURON=ON \
+        -DCORENRN_ENABLE_GPU=OFF \
+        -DCORENRN_ENABLE_NMODL=ON \
+        -DCORENRN_NMODL_DIR=$INSTALL_DIR/NMODL \
         -DCORENRN_NMODL_FLAGS="sympy --analytic" \
         -DNRN_ENABLE_PYTHON=ON \
         -DPYTHON_EXECUTABLE=$(which python3) \
@@ -255,6 +281,33 @@ install_nrn_cnrn_gpu_nmodl() {
         -DCORENRN_ENABLE_GPU=ON \
         -DCORENRN_ENABLE_NMODL=ON \
         -DCORENRN_NMODL_DIR=$INSTALL_DIR/NMODL \
+        -DNRN_ENABLE_PYTHON=ON \
+        -DPYTHON_EXECUTABLE=$(which python3) \
+        -DNRN_ENABLE_TESTS=OFF \
+        -DCORENRN_ENABLE_UNIT_TESTS=OFF \
+        -DCMAKE_C_COMPILER=$CC \
+        -DCMAKE_CXX_COMPILER=$CXX \
+        -DCMAKE_CUDA_COMPILER=nvcc \
+        -DCMAKE_BUILD_TYPE=RelWithDebInfo
+    make -j && make install
+    popd
+    unload_pgi_cuda
+}
+
+install_nrn_cnrn_gpu_nmodl_sympy() {
+    printf "\n----------------- INSTALL NEURON+CORENEURON+NMODL+SYMPY (GPU) --------------\n"
+    load_pgi_cuda
+    mkdir -p $BUILD_DIR/nrn_cnrn_gpu_nmodl_sympy && pushd $BUILD_DIR/nrn_cnrn_gpu_nmodl_sympy
+    cmake $SOURCE_DIR/nrn \
+        -DCMAKE_INSTALL_PREFIX=$INSTALL_DIR/nrn_cnrn_gpu_nmodl_sympy \
+        -DNRN_ENABLE_INTERVIEWS=OFF \
+        -DNRN_ENABLE_RX3D=OFF \
+        -DNRN_ENABLE_MPI=ON \
+        -DCORENRN_ENABLE_OPENMP=OFF \
+        -DNRN_ENABLE_CORENEURON=ON \
+        -DCORENRN_ENABLE_GPU=ON \
+        -DCORENRN_ENABLE_NMODL=ON \
+        -DCORENRN_NMODL_DIR=$INSTALL_DIR/NMODL \
         -DCORENRN_NMODL_FLAGS="sympy --analytic" \
         -DNRN_ENABLE_PYTHON=ON \
         -DPYTHON_EXECUTABLE=$(which python3) \
@@ -294,13 +347,17 @@ setup_python_packages
 # 3. Installing simulation engine
 #install_nrn_cnrn_cpu_mod2c
 #install_nrn_cnrn_cpu_nmodl
+#install_nrn_cnrn_cpu_nmodl_sympy
 #install_nrn_cnrn_gpu_mod2c
 install_nrn_cnrn_gpu_mod2c_debug
-install_nrn_cnrn_gpu_nmodl
+#install_nrn_cnrn_gpu_nmodl
+#install_nrn_cnrn_gpu_nmodl_sympy
 
 # 4. Generate library
 #run_nrnivmodl nrn_cnrn_cpu_mod2c
 #run_nrnivmodl nrn_cnrn_cpu_nmodl
+#run_nrnivmodl nrn_cnrn_cpu_nmodl_sympy
 #run_nrnivmodl nrn_cnrn_gpu_mod2c
 run_nrnivmodl nrn_cnrn_gpu_mod2c_debug
-run_nrnivmodl nrn_cnrn_gpu_nmodl
+#run_nrnivmodl nrn_cnrn_gpu_nmodl
+#run_nrnivmodl nrn_cnrn_gpu_nmodl_sympy

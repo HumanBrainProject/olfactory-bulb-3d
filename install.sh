@@ -342,22 +342,22 @@ setup_modules
 setup_python_packages
 
 # 2. Installing base software
-#install_nmodl
+install_nmodl
 
 # 3. Installing simulation engine
-#install_nrn_cnrn_cpu_mod2c
-#install_nrn_cnrn_cpu_nmodl
-#install_nrn_cnrn_cpu_nmodl_sympy
-#install_nrn_cnrn_gpu_mod2c
+install_nrn_cnrn_cpu_mod2c
+install_nrn_cnrn_cpu_nmodl
+install_nrn_cnrn_cpu_nmodl_sympy
+install_nrn_cnrn_gpu_mod2c
 install_nrn_cnrn_gpu_mod2c_debug
-#install_nrn_cnrn_gpu_nmodl
-#install_nrn_cnrn_gpu_nmodl_sympy
+install_nrn_cnrn_gpu_nmodl
+install_nrn_cnrn_gpu_nmodl_sympy
 
 # 4. Generate library
-#run_nrnivmodl nrn_cnrn_cpu_mod2c
-#run_nrnivmodl nrn_cnrn_cpu_nmodl
-#run_nrnivmodl nrn_cnrn_cpu_nmodl_sympy
-#run_nrnivmodl nrn_cnrn_gpu_mod2c
+run_nrnivmodl nrn_cnrn_cpu_mod2c
+run_nrnivmodl nrn_cnrn_cpu_nmodl
+run_nrnivmodl nrn_cnrn_cpu_nmodl_sympy
+run_nrnivmodl nrn_cnrn_gpu_mod2c
 run_nrnivmodl nrn_cnrn_gpu_mod2c_debug
-#run_nrnivmodl nrn_cnrn_gpu_nmodl
-#run_nrnivmodl nrn_cnrn_gpu_nmodl_sympy
+run_nrnivmodl nrn_cnrn_gpu_nmodl
+run_nrnivmodl nrn_cnrn_gpu_nmodl_sympy

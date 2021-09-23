@@ -1,11 +1,10 @@
 #!/bin/bash
 
 #SBATCH --account=proj16
-#SBATCH --partition=prod
-#SBATCH --time=02:00:00
+#SBATCH --partition=prod_p2
+#SBATCH --time=08:00:00
 
 #SBATCH --nodes=1
-##SBATCH --ntasks-per-node=36
 
 #SBATCH --cpus-per-task=2
 #SBATCH --exclusive
@@ -42,7 +41,7 @@ srun dplace $INSTALL_DIR/nrn_cnrn_cpu_mod2c/special/x86_64/special -mpi -python 
 cat 0_nrn_cpu.spikes* | sort -k 1n,1n -k 2n,2n > 0_nrn_cpu_.spk
 rm 0_nrn_cpu.*
 rm -rf __pycache__
-exit
+#exit
 echo "----------------- CoreNEURON SIM (CPU_MOD2C) ----------------"
 export PYTHONPATH=$INSTALL_DIR/nrn_cnrn_cpu_mod2c/lib/python:$PYTHONPATH_INIT
 rm 1_nrn_cnrn_cpu_mod2c_.log 1_nrn_cnrn_cpu_mod2c_.spk
@@ -68,6 +67,15 @@ cat 2_nrn_cnrn_cpu_nmodl.spikes* | sort -k 1n,1n -k 2n,2n > 2_nrn_cnrn_cpu_nmodl
 rm 2_nrn_cnrn_cpu_nmodl.*
 rm -rf __pycache__
 
+echo "----------------- CoreNEURON SIM (CPU_NMODL_SYMPY) ----------------"
+export PYTHONPATH=$INSTALL_DIR/nrn_cnrn_cpu_nmodl_sympy/lib/python:$PYTHONPATH_INIT
+rm 2_nrn_cnrn_cpu_nmodl_sympy_.log 2_nrn_cnrn_cpu_nmodl_sympy_.spk
+srun dplace $INSTALL_DIR/nrn_cnrn_cpu_nmodl_sympy/special/x86_64/special -mpi -python bulb3dtest.py $SIM_TIME 1 0 2_nrn_cnrn_cpu_nmodl_sympy 2>&1 | tee 2_nrn_cnrn_cpu_nmodl_sympy_.log
+# Sort the spikes
+cat 2_nrn_cnrn_cpu_nmodl_sympy.spikes* | sort -k 1n,1n -k 2n,2n > 2_nrn_cnrn_cpu_nmodl_sympy_.spk
+rm 2_nrn_cnrn_cpu_nmodl_sympy.*
+rm -rf __pycache__
+
 # =============================================================================
 
 echo "---------------------------------------------"
@@ -90,6 +98,14 @@ else
     echo "0_nrn_cpu_.spk 2_nrn_cnrn_cpu_nmodl_.spk are the same"
 fi
 
+DIFF=$(diff 0_nrn_cpu_.spk 2_nrn_cnrn_cpu_nmodl_sympy_.spk)
+if [ "$DIFF" != "" ]
+then
+    echo "0_nrn_cpu_.spk 2_nrn_cnrn_cpu_nmodl_sympy_.spk are not the same"
+else
+    echo "0_nrn_cpu_.spk 2_nrn_cnrn_cpu_nmodl_sympy_.spk are the same"
+fi
+
 # =============================================================================
 
 echo "---------------------------------------------"
@@ -102,6 +118,8 @@ echo "----------------- CoreNEURON SIM (CPU_MOD2C) STATS ----------------"
 grep "Solver Time : " 1_nrn_cnrn_cpu_mod2c_.log
 echo "----------------- CoreNEURON SIM (CPU_NMODL) STATS ----------------"
 grep "Solver Time : " 2_nrn_cnrn_cpu_nmodl_.log
+echo "----------------- CoreNEURON SIM (CPU_NMODL_SYMPY) STATS ----------------"
+grep "Solver Time : " 2_nrn_cnrn_cpu_nmodl_sympy_.log
 
 echo "---------------------------------------------"
 echo "---------------------------------------------"

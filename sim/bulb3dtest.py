@@ -4,9 +4,10 @@ import odors
 import sys
 from math import sqrt
 
-params.tstop = int(sys.argv[-4])
-params.coreneuron = bool(int(sys.argv[-3]))
-params.gpu = bool(int(sys.argv[-2]))
+params.tstop = int(sys.argv[-5])
+params.coreneuron = bool(int(sys.argv[-4]))
+params.gpu = bool(int(sys.argv[-3]))
+params.dump_model = bool(int(sys.argv[-2]))
 params.filename = sys.argv[-1]
 
 params.sniff_invl_min = params.sniff_invl_max = 500

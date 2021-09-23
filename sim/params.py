@@ -14,6 +14,7 @@ GLOM_RADIUS = 50.
 # coreneuron parameters
 coreneuron = False
 gpu = False
+dump_model = False
 
 try:
     

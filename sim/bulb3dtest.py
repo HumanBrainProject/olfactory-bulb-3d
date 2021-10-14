@@ -21,5 +21,5 @@ params.odor_sequence = [ ('Onion', 50, 1000, 1e+9) ]
 #runsim.build_part_model([5,37,32,78,7], [])
 #runsim.build_part_model(range(0, 120), [])
 #runsim.build_part_model([5,37,32,78,7,0,1,2,3,4,6,8], [])
-runsim.build_part_model(range(0, 40), [])
+runsim.build_part_model(range(0, 120), [])
 runsim.run()

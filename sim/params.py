@@ -1,4 +1,5 @@
 
+import args
 # -*- coding: cp1252 -*-
 
 # bulb spatial definition
@@ -14,6 +15,7 @@ GLOM_RADIUS = 50.
 # coreneuron parameters
 coreneuron = False
 gpu = False
+filemode = False
 
 try:
     
@@ -176,3 +178,9 @@ gc_type3_prob=0
 
 vclamp = []
 
+args = args.parse_arguments()
+tstop = args.tstop
+coreneuron = args.coreneuron
+gpu = args.gpu
+filemode = args.filemode
+filename = args.filename

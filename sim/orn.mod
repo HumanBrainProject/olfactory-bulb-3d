@@ -327,9 +327,13 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 }
 
 static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {
-	assert(!_p_donotuse);
 	uint32_t* di = ((uint32_t*)d) + *offset;
 	nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+#if !NRNBBCORE
+    if(*pv) {
+        nrnran123_deletestream(*pv);
+    }
+#endif
 	*pv = nrnran123_newstream3(di[0], di[1], di[2]);
 	*offset += 3;
 }

@@ -12,7 +12,7 @@ def parse_arguments():
                         help='Enable filemode execution of CoreNEURON')
     parser.add_argument('--filename', type=str, metavar='NAME', default='olfactory_bulb',
                         help='Output prefix (str)')
-    args = parser.parse_args()
+    args, _ = parser.parse_known_args()
     if args.gpu and not args.coreneuron:
         args.coreneuron = True
         print("[Warning] --gpu option was given. Enabling automatically CoreNEURON execution")

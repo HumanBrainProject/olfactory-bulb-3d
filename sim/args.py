@@ -12,6 +12,8 @@ def parse_arguments():
                         help='Enable filemode execution of CoreNEURON')
     parser.add_argument('--filename', type=str, metavar='NAME', default='olfactory_bulb',
                         help='Output prefix (str)')
+    parser.add_argument('--dump-model', action='store_true', default=False,
+                        help='Dump CoreNEURON data and exit without running the NEURON simulation')
     args, _ = parser.parse_known_args()
     if args.gpu and not args.coreneuron:
         args.coreneuron = True

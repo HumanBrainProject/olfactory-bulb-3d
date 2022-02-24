@@ -16,6 +16,7 @@ GLOM_RADIUS = 50.
 coreneuron = False
 gpu = False
 filemode = False
+dump_model = False
 
 try:
     

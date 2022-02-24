@@ -184,3 +184,4 @@ coreneuron = args.coreneuron
 gpu = args.gpu
 filemode = args.filemode
 filename = args.filename
+dump_model = args.dump_model

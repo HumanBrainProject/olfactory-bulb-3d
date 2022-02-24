@@ -1,7 +1,6 @@
 import params
 import runsim
 import odors
-import sys
 from math import sqrt
 
 params.sniff_invl_min = params.sniff_invl_max = 500

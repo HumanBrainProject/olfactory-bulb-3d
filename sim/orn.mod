@@ -204,12 +204,6 @@ ENDVERBATIM
 
 VERBATIM
 #include "nrnran123.h"
-double nrn_random_pick(void* r);
-void* nrn_random_arg(int argpos);
-#if !NRNBBCORE
-int nrn_random_isran123(void* r, uint32_t* id1, uint32_t* id2, uint32_t* id3);
-void nrn_random_reset(void* r);
-#endif
 ENDVERBATIM
 
 PROCEDURE initstream() {

@@ -211,12 +211,12 @@ VERBATIM
   if (_p_donotuse) {
     uint32_t id1, id2, id3;
     #if NRNBBCORE
-      nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
+      nrnran123_setseq(reinterpret_cast<nrnran123_State*>(_p_donotuse), 0, 0);
     #else
       if (_ran_compat == 1) {
-        nrn_random_reset(_p_donotuse);
+        nrn_random_reset(reinterpret_cast<Rand*>(_p_donotuse));
       }else{
-        nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
+        nrnran123_setseq(reinterpret_cast<nrnran123_State*>(_p_donotuse), 0, 0);
       }
     #endif
   }	
@@ -233,13 +233,13 @@ VERBATIM
     */
     #if !NRNBBCORE
       if(_ran_compat == 1) {
-        _lnormrand123 = nrn_random_pick(_p_donotuse);
+        _lnormrand123 = nrn_random_pick(reinterpret_cast<Rand*>(_p_donotuse));
       }else{
-        _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
+        _lnormrand123 = nrnran123_normal(reinterpret_cast<nrnran123_State*>(_p_donotuse));
       }
     #else
       #pragma acc routine(nrnran123_normal) seq
-      _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
+      _lnormrand123 = nrnran123_normal(static_cast<nrnran123_State*>(_p_donotuse));
     #endif
   }else{
     /* only use Random123 */
@@ -253,7 +253,7 @@ PROCEDURE noiseFromRandom() {
 VERBATIM
 #if !NRNBBCORE
  {
-	void** pv = (void**)(&_p_donotuse);
+	void** pv = reinterpret_cast<void**>(&_p_donotuse);
 	if (_ran_compat == 2) {
 		fprintf(stderr, "orn.noiseFromRandom123 was previously called\n");
 		assert(0);
@@ -273,20 +273,20 @@ PROCEDURE noiseFromRandom123() {
 VERBATIM
 #if !NRNBBCORE
  {
-        nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+        nrnran123_State** pv = reinterpret_cast<nrnran123_State**>(&_p_donotuse);
         if (_ran_compat == 1) {
-		fprintf(stderr, "orn.noiseFromRandom was previously called\n");
-                assert(0);
+          fprintf(stderr, "orn.noiseFromRandom was previously called\n");
+          assert(0);
         }
         _ran_compat = 2;
         if (*pv) {
-                nrnran123_deletestream(*pv);
-                *pv = (nrnran123_State*)0;
+          nrnran123_deletestream(*pv);
+          *pv = (nrnran123_State*)0;
         }
         if (ifarg(3)) {
-		*pv = nrnran123_newstream3((uint32_t)*getarg(1), (uint32_t)*getarg(2), (uint32_t)*getarg(3));
+		      *pv = nrnran123_newstream3(static_cast<uint32_t>(*getarg(1)), static_cast<uint32_t>(*getarg(2)), static_cast<uint32_t>(*getarg(3)));
         }else if (ifarg(2)) {
-		*pv = nrnran123_newstream((uint32_t)*getarg(1), (uint32_t)*getarg(2));
+		      *pv = nrnran123_newstream(static_cast<uint32_t>(*getarg(1)), static_cast<uint32_t>(*getarg(2)));
         }
  }
 #endif
@@ -302,16 +302,16 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 		assert(0);
 	}
 	if (d) {
-		uint32_t* di = ((uint32_t*)d) + *offset;
+		uint32_t* di = reinterpret_cast<uint32_t*>(d) + *offset;
 		if (_ran_compat == 1) {
-			void** pv = (void**)(&_p_donotuse);
+			Rand** pv = reinterpret_cast<Rand**>(&_p_donotuse);
 			/* error if not using Random123 generator */
 			if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
 				fprintf(stderr, "orn: Random123 generator is required\n");
 				assert(0);
 			}
 		}else{
-			nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+			nrnran123_State** pv = reinterpret_cast<nrnran123_State**>(&_p_donotuse);
 			nrnran123_getids3(*pv, di, di+1, di+2);
 		}
 		/*printf("orn bbcore_write %d %d %d\n", di[0], di[1], di[3]);*/
@@ -321,8 +321,8 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 }
 
 static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {
-	uint32_t* di = ((uint32_t*)d) + *offset;
-	nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
+	uint32_t* di = reinterpret_cast<uint32_t*>(d) + *offset;
+	nrnran123_State** pv = reinterpret_cast<nrnran123_State**>(&_p_donotuse);
 #if !NRNBBCORE
     if(*pv) {
         nrnran123_deletestream(*pv);

@@ -232,7 +232,7 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 		assert(0);
 	}
 	if (d) {
-		uint32_t* di = ((uint32_t*)(d)) + *offset;
+		uint32_t* di = ((uint32_t*)d) + *offset;
 		Rand** pv = (Rand**)(&_p_donotuse);
 		/* error if not using Random123 generator */
 		if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
@@ -247,7 +247,7 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 
 static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {
 	assert(!_p_donotuse);
-	uint32_t* di = ((uint32_t*)(d)) + *offset;
+	uint32_t* di = ((uint32_t*)d) + *offset;
 	nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
 	*pv = nrnran123_newstream3(di[0], di[1], di[2]);
 	*offset += 3;

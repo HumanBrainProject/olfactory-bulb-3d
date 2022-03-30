@@ -179,6 +179,12 @@ PROCEDURE oup() {		: use Scop function normrand(mean, std_dev)
 
 VERBATIM
 #include "nrnran123.h"
+#ifndef __cplusplus
+typedef struct Rand Rand;
+Rand* nrn_random_arg(int);
+int nrn_random_isran123(Rand*, uint32_t*, uint32_t*, uint32_t*);
+double nrn_random_pick(Rand*);
+#endif
 ENDVERBATIM
 
 FUNCTION normrand123() {
@@ -190,7 +196,7 @@ VERBATIM
 		: distribution MUST be set to Random.negexp(1)
 		*/
         #if !NRNBBCORE
-		_lnormrand123 = nrn_random_pick(reinterpret_cast<Rand*>(_p_donotuse));
+		_lnormrand123 = nrn_random_pick((Rand*)_p_donotuse);
         #else
         #pragma acc routine(nrnran123_normal) seq
         _lnormrand123 = nrnran123_normal(static_cast<nrnran123_State*>(_p_donotuse));
@@ -206,7 +212,7 @@ PROCEDURE noiseFromRandom() {
 VERBATIM
 #if !NRNBBCORE
  {
-	void** pv = reinterpret_cast<void**>(&_p_donotuse);
+	void** pv = (void**)(&_p_donotuse);
 	if (ifarg(1)) {
 		*pv = nrn_random_arg(1);
 	}else{
@@ -226,8 +232,8 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 		assert(0);
 	}
 	if (d) {
-		uint32_t* di = reinterpret_cast<uint32_t*>(d) + *offset;
-		Rand** pv = reinterpret_cast<Rand**>(&_p_donotuse);
+		uint32_t* di = ((uint32_t*)(d)) + *offset;
+		Rand** pv = (Rand**)(&_p_donotuse);
 		/* error if not using Random123 generator */
 		if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
 			fprintf(stderr, "Gfluct: Random123 generator is required\n");
@@ -241,8 +247,8 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 
 static void bbcore_read(double* x, int* d, int* xx, int* offset, _threadargsproto_) {
 	assert(!_p_donotuse);
-	uint32_t* di = reinterpret_cast<uint32_t*>(d) + *offset;
-	nrnran123_State** pv = reinterpret_cast<nrnran123_State**>(&_p_donotuse);
+	uint32_t* di = ((uint32_t*)(d)) + *offset;
+	nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
 	*pv = nrnran123_newstream3(di[0], di[1], di[2]);
 	*offset += 3;
 }

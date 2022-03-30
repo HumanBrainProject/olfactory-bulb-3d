@@ -179,11 +179,13 @@ PROCEDURE oup() {		: use Scop function normrand(mean, std_dev)
 
 VERBATIM
 #include "nrnran123.h"
+#if !NRNBBCORE
 #ifndef __cplusplus
 typedef struct Rand Rand;
 Rand* nrn_random_arg(int);
 int nrn_random_isran123(Rand*, uint32_t*, uint32_t*, uint32_t*);
 double nrn_random_pick(Rand*);
+#endif
 #endif
 ENDVERBATIM
 

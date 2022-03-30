@@ -202,13 +202,11 @@ static int _ran_compat; /* specifies the noise style for all instances */
 
 #include "nrnran123.h"
 #if !NRNBBCORE
-#ifndef __cplusplus
 typedef struct Rand Rand;
 Rand* nrn_random_arg(int);
 int nrn_random_isran123(Rand*, uint32_t*, uint32_t*, uint32_t*);
 double nrn_random_pick(Rand*);
 void nrn_random_reset(Rand* r);
-#endif
 #endif
 ENDVERBATIM
 

@@ -199,7 +199,7 @@ VERBATIM
 		_lnormrand123 = nrn_random_pick((Rand*)_p_donotuse);
         #else
         #pragma acc routine(nrnran123_normal) seq
-        _lnormrand123 = nrnran123_normal(static_cast<nrnran123_State*>(_p_donotuse));
+        _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
         #endif
 	}else{
 		/* only use Random123 */

@@ -215,7 +215,7 @@ VERBATIM
   if (_p_donotuse) {
     uint32_t id1, id2, id3;
     #if NRNBBCORE
-      nrnran123_setseq(reinterpret_cast<nrnran123_State*>(_p_donotuse), 0, 0);
+      nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
     #else
       if (_ran_compat == 1) {
         nrn_random_reset((Rand*)_p_donotuse);
@@ -243,7 +243,7 @@ VERBATIM
       }
     #else
       #pragma acc routine(nrnran123_normal) seq
-      _lnormrand123 = nrnran123_normal(static_cast<nrnran123_State*>(_p_donotuse));
+      _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
     #endif
   }else{
     /* only use Random123 */

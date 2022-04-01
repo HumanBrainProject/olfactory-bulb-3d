@@ -1,3 +1,6 @@
+## Compatibility
+This version of the model is compatible with NEURON versions newer than 8.1 (#19).
+
 ## How to run this model on Marconi100
 
 #### Installing NEURON+CoreNEURON

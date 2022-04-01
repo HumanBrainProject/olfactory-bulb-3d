@@ -177,10 +177,6 @@ PROCEDURE oup() {		: use Scop function normrand(mean, std_dev)
    }
 }
 
-VERBATIM
-#include "nrnran123.h"
-ENDVERBATIM
-
 FUNCTION normrand123() {
 VERBATIM
 	if (_p_donotuse) {

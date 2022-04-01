@@ -201,10 +201,6 @@ static int _ran_compat; /* specifies the noise style for all instances */
 #endif /* running in NEURON */
 ENDVERBATIM
 
-VERBATIM
-#include "nrnran123.h"
-ENDVERBATIM
-
 PROCEDURE initstream() {
 VERBATIM
   if (_p_donotuse) {

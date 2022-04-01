@@ -40,10 +40,6 @@ NET_RECEIVE(dummy) {
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::
 
-VERBATIM
-#include "nrnran123.h"
-ENDVERBATIM
-
 PROCEDURE initstream() {
 VERBATIM
   if (_p_space) {

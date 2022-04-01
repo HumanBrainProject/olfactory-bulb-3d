@@ -1,3 +1,8 @@
+## Compatibility
+
+* This version of the model is compatible with NEURON versions newer than 8.1 (#19).
+* If you would like to use older NEURON (<= 8.1) then you can use tagged release `v1.0.0`.
+
 ## How to run this model on Marconi100
 
 #### Installing NEURON+CoreNEURON
@@ -18,6 +23,13 @@ Let's clone olfactory bulb model repository from GitHub:
 git clone https://github.com/HumanBrainProject/olfactory-bulb-3d.git
 cd olfactory-bulb-3d/sim
 ```
+
+For using NEURON release older than `v8.1`, checkout tag `v1.0.0`:
+
+```
+git checkout v1.0.0
+```
+
 
 #### Building Special
 

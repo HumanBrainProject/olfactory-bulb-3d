@@ -201,17 +201,6 @@ static int _ran_compat; /* specifies the noise style for all instances */
 #endif /* running in NEURON */
 ENDVERBATIM
 
-
-VERBATIM
-#include "nrnran123.h"
-double nrn_random_pick(void* r);
-void* nrn_random_arg(int argpos);
-#if !NRNBBCORE
-int nrn_random_isran123(void* r, uint32_t* id1, uint32_t* id2, uint32_t* id3);
-void nrn_random_reset(void* r);
-#endif
-ENDVERBATIM
-
 PROCEDURE initstream() {
 VERBATIM
   if (_p_donotuse) {
@@ -220,7 +209,7 @@ VERBATIM
       nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
     #else
       if (_ran_compat == 1) {
-        nrn_random_reset(_p_donotuse);
+        nrn_random_reset((Rand*)_p_donotuse);
       }else{
         nrnran123_setseq((nrnran123_State*)_p_donotuse, 0, 0);
       }
@@ -239,7 +228,7 @@ VERBATIM
     */
     #if !NRNBBCORE
       if(_ran_compat == 1) {
-        _lnormrand123 = nrn_random_pick(_p_donotuse);
+        _lnormrand123 = nrn_random_pick((Rand*)_p_donotuse);
       }else{
         _lnormrand123 = nrnran123_normal((nrnran123_State*)_p_donotuse);
       }
@@ -281,18 +270,18 @@ VERBATIM
  {
         nrnran123_State** pv = (nrnran123_State**)(&_p_donotuse);
         if (_ran_compat == 1) {
-		fprintf(stderr, "orn.noiseFromRandom was previously called\n");
-                assert(0);
+          fprintf(stderr, "orn.noiseFromRandom was previously called\n");
+          assert(0);
         }
         _ran_compat = 2;
         if (*pv) {
-                nrnran123_deletestream(*pv);
-                *pv = (nrnran123_State*)0;
+          nrnran123_deletestream(*pv);
+          *pv = (nrnran123_State*)0;
         }
         if (ifarg(3)) {
-		*pv = nrnran123_newstream3((uint32_t)*getarg(1), (uint32_t)*getarg(2), (uint32_t)*getarg(3));
+	      *pv = nrnran123_newstream3((uint32_t)*getarg(1), (uint32_t)*getarg(2), (uint32_t)*getarg(3));
         }else if (ifarg(2)) {
-		*pv = nrnran123_newstream((uint32_t)*getarg(1), (uint32_t)*getarg(2));
+	      *pv = nrnran123_newstream((uint32_t)*getarg(1), (uint32_t)*getarg(2));
         }
  }
 #endif
@@ -310,7 +299,7 @@ static void bbcore_write(double* x, int* d, int* xx, int *offset, _threadargspro
 	if (d) {
 		uint32_t* di = ((uint32_t*)d) + *offset;
 		if (_ran_compat == 1) {
-			void** pv = (void**)(&_p_donotuse);
+			Rand** pv = (Rand**)(&_p_donotuse);
 			/* error if not using Random123 generator */
 			if (!nrn_random_isran123(*pv, di, di+1, di+2)) {
 				fprintf(stderr, "orn: Random123 generator is required\n");

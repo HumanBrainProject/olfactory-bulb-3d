@@ -97,8 +97,8 @@ if __name__ == '__main__':
   cw = CellWriter('../vis/mccells')
   for gid in range(635):
     cw.write(genMitral(gid))
-    print 'cell', gid, 'generated and stored'
+    print('cell', gid, 'generated and stored')
   for gid in range(635,635+10*127):
     cw.write(genMTufted(gid))
-    print 'cell', gid, 'generated and stored'
+    print('cell', gid, 'generated and stored')
   cw.close()

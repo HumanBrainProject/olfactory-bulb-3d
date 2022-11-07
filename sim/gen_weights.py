@@ -56,7 +56,7 @@ for perc in [0,50,100]:
                 
                 fo.write('%d %d 0\n' % (gid, wexc))
                 fo.write('%d %d 0\n' % (gid-1, winh))
-      print w_base, glomid, perc
+      print(w_base, glomid, perc)
 
     
     

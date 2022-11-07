@@ -40,7 +40,7 @@ def save(prefix, t, g):
 
 
 
-    ngroup = nhost / max(nhost / 64, 1)
+    ngroup = int(nhost / max(nhost / 64, 1))
     for rg, rp in group_serialize(ngroup):
         
         fname_data = '%s.sbg.%04d' % (prefix, rg)
@@ -65,7 +65,7 @@ def save(prefix, t, g):
             fh.write(pack('>LL', gid, h))
 
         # output dictionary
-        for syn in getmodel().mgrss.values():
+        for syn in list(getmodel().mgrss.values()):
             if syn.md:
                 fdic.write(pack('>LLHfLf', syn.md_gid, syn.mgid, syn.isec, syn.xm, syn.ggid, syn.xg))
             

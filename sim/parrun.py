@@ -24,7 +24,7 @@ def prun(tstop):
   pc.setup_transfer()
   #pc.timeout(0)
   mindelay = pc.set_maxstep(10)
-  if rank == 0: print 'mindelay = %g'%mindelay
+  if rank == 0: print('mindelay = %g'%mindelay)
 
   cvode.active(0)
   h.stdinit()
@@ -34,15 +34,21 @@ def prun(tstop):
   solver_time = 0
 
   inittime = h.startsw()
-  if rank == 0: print 'cvode active=', cvode.active()
+  if rank == 0: print('cvode active=', cvode.active())
 
   if rank == 0:
     if clean_weights_active:
-      print 'weights reset active at %g ms' % clean_weights_interval
+      print('weights reset active at %g ms' % clean_weights_interval)
     else:
-      print 'weights reset not active'
+      print('weights reset not active')
 
   tnext_clean = clean_weights_interval
+
+  if params.dump_model:
+    pc.nrnbbcore_write('coredat')
+    if pc.id() == 0:
+      print('Dumping CoreNEURON data and exiting simulation')
+    return
 
   # if coreneuron is enabled, run it with coreneuron
   if params.coreneuron:
@@ -58,7 +64,7 @@ def prun(tstop):
   else:
     # neuron execution
     inittime = h.startsw() - inittime
-    print 'init time = %g'%inittime
+    print('init time = %g'%inittime)
 
     while h.t < tstop:
       told = h.t
@@ -82,7 +88,7 @@ def prun(tstop):
 
       if h.t == told:
         if rank == 0:
-          print "psolve did not advance time from t=%.20g to tnext=%.20g\n"%(h.t, tnext)
+          print("psolve did not advance time from t=%.20g to tnext=%.20g\n"%(h.t, tnext))
         break
       # weight_file(params.filename+('.%d'%isaved))
       # save spikes and dictionary in a binary format to
@@ -93,14 +99,14 @@ def prun(tstop):
 
   # for cmparison with CoreNEURON, print psolve time
   if rank == 0 and not params.coreneuron:
-    print 'Solver time : %g'% solver_time
+    print('Solver time : %g'% solver_time)
   
   runtime = h.startsw() - runtime
   comptime = pc.step_time()
   splittime = pc.vtransfer_time(1)
   gaptime = pc.vtransfer_time()
   exchtime = pc.wait_time() - exchtime
-  if rank == 0: print 'runtime = %g'% runtime
+  if rank == 0: print('runtime = %g'% runtime)
   printperf([comptime, exchtime, splittime, gaptime])
 
 def printperf(p):
@@ -113,14 +119,14 @@ def printperf(p):
   if rank > 0:
     return
   b = avgp[0]/maxp[0]
-  print 'Load Balance = %g'% b
-  print '\n     ',
-  for i in header: print '%12s'%i,
-  print '\n avg ',
-  for i in avgp: print '%12.2f'%i,
-  print '\n max ',
-  for i in maxp: print '%12.2f'%i,
-  print ''
+  print('Load Balance = %g'% b)
+  print('\n     ', end=' ')
+  for i in header: print('%12s'%i, end=' ')
+  print('\n avg ', end=' ')
+  for i in avgp: print('%12.2f'%i, end=' ')
+  print('\n max ', end=' ')
+  for i in maxp: print('%12.2f'%i, end=' ')
+  print('')
  
 if __name__ == '__main__':
   import common

@@ -1,6 +1,6 @@
 from os import system
 from sys import argv
-print argv[1]
+print(argv[1])
 try:
   iskip=int(argv[2])
 except:

@@ -47,7 +47,7 @@ def statistics(parts):
 if __name__ == '__main__':
   from util import serialize, finish
   for cx in ([(i, i) for i in range(10)],[]):
-    print len(cx), ' complexity items ', cx
+    print(len(cx), ' complexity items ', cx)
     pinfo = lpt(cx, 3)
-    print len(pinfo), ' lpt partitions ', pinfo
-    print statistics(pinfo)
+    print(len(pinfo), ' lpt partitions ', pinfo)
+    print(statistics(pinfo))

@@ -19,15 +19,15 @@ gj_max_g2=0.001
 def init():
     data = {}
     for uid in range(nhost):
-      data[uid] = getmodel().mitrals.keys()
+      data[uid] = list(getmodel().mitrals.keys())
     data = a2a.all2all(data)
     mgids = []
-    for _mgids in data.values(): mgids += _mgids
+    for _mgids in list(data.values()): mgids += _mgids
     mgids = set(mgids)
 
     # initialize source
     
-    for mgid in getmodel().mitrals.keys():
+    for mgid in list(getmodel().mitrals.keys()):
         mpriden = split.mpriden(mgid)
         if not mpriden:
           continue
@@ -58,7 +58,7 @@ def init():
             else:
                 sistergids += [mgid - 1]
             
-        sistergids = mgids.intersection(range(glomid * nmxg, glomid * nmxg + nmxg) + range(glomid * nmt + nmi, glomid * nmt + nmt + nmi)).difference([ mgid ])  
+        sistergids = mgids.intersection(list(range(glomid * nmxg, glomid * nmxg + nmxg)) + list(range(glomid * nmt + nmi, glomid * nmt + nmt + nmi))).difference([ mgid ])  
 
         for sistermgid in sistergids:
             gap = h.Gap(mpriden(0.99))
@@ -77,7 +77,7 @@ def init():
     pc.barrier()
 
     # initialize targets
-    for key, gap in getmodel().gj.items():
+    for key, gap in list(getmodel().gj.items()):
         mgid, sistermgid = key
         pc.target_var(gap, gap._ref_vgap, sistermgid)
 

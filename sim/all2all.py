@@ -16,7 +16,7 @@ ptime = False
 def all2all(data, size=0):
   enter = h.startsw()
   r = _all2all(data, size)
-  if ptime and rank == 0: print 'all2all elapsed time = %g'% (h.startsw()-enter)
+  if ptime and rank == 0: print('all2all elapsed time = %g'% (h.startsw()-enter))
   return  r
 
 def _all2all(data, size=0):
@@ -49,4 +49,4 @@ if __name__ == '__main__':
   sizes = all2all(d, -1)
   d = all2all(d)
   for r in util.serialize():
-    print rank, sizes, d
+    print(rank, sizes, d)

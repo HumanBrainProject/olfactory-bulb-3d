@@ -176,7 +176,7 @@ def genNetwork(gloms, fname):
 
             nrn = genMitral(mid)
 
-            print "mitral ", mid
+            print("mitral ", mid)
 
             
 
@@ -202,7 +202,7 @@ def getGloms(gloms):
 
             newgloms += [ genMitral(mid) ]
 
-            print "mitral ", mid
+            print("mitral ", mid)
 
 
 
@@ -226,7 +226,7 @@ def genMitrals(mids, fname):
 
         nrn = genMitral(g)
 
-        print "mitral ", g
+        print("mitral ", g)
 
             
 

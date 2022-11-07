@@ -53,7 +53,7 @@ def load(fname = None):
                 ggid = int(tk[1])
                 arc = float(tk[3])
                 entry = (ggid, arc)
-                if gid_dict.has_key(gid + 1):
+                if gid + 1 in gid_dict:
                     entry = gid_dict[gid + 1] + entry
                     gid_dict[gid + 1] = entry
                     add(mgid_dict, entry[0], True, gid, entry[3])
@@ -114,9 +114,9 @@ def query(gid, verbrec=False):
 
         
     if verbrec:
-        print descr
-        print '\n if you want use on vrecord write this params'
-        print '\t (' + str(gid) + ', ' + str(isec) + ', ' + str(x) + ')'
+        print(descr)
+        print('\n if you want use on vrecord write this params')
+        print('\t (' + str(gid) + ', ' + str(isec) + ', ' + str(x) + ')')
         
     return gid, isec, x, descr
 
@@ -129,7 +129,7 @@ def mknetwork(gloms=[]):
     import params
     import mgrs
     from common import rank, nhost
-    if len(gloms) == 0: gloms = range(params.Ngloms)
+    if len(gloms) == 0: gloms = list(range(params.Ngloms))
     for glomid in gloms:
 #        if glomid % nhost != rank:
 #            continue
@@ -140,7 +140,7 @@ def mknetwork(gloms=[]):
             mgid = _ci[0]
             ggid = _ci[3]
 
-            if not mgid_dict.has_key(mgid):
+            if mgid not in mgid_dict:
                 gids = []
                 mgid_dict[mgid] = gids
             else:
@@ -153,7 +153,7 @@ def mknetwork(gloms=[]):
 
             gid_dict[syngid] = _ci
 
-            if not ggid_dict.has_key(ggid):
+            if ggid not in ggid_dict:
                 gids = []
                 ggid_dict[ggid] = gids
             else:
@@ -165,7 +165,7 @@ def mknetwork(gloms=[]):
 def save(filename):
     from struct import pack
     fo = open(filename, 'w')
-    for gid, ci in gid_dict.items():
+    for gid, ci in list(gid_dict.items()):
         fo.write(pack('>LLHfLf', gid, ci[0], ci[1], ci[2], ci[3], ci[5]))
     fo.close()
             
@@ -182,6 +182,6 @@ if __name__ == '__main__':
         try:
             query(int(argv[-1]), True)
         except:
-            print 'gid ', argv[-1], ' not found'
+            print('gid ', argv[-1], ' not found')
         
     quit()

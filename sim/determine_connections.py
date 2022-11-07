@@ -27,7 +27,7 @@ import lateral_connections as latconn
 
 
 gc2nconn = {}
-for ggid in granules.ggid2pos.keys():
+for ggid in list(granules.ggid2pos.keys()):
   if (ggid - params.gid_granule_begin) % nhost == rank:
     gc2nconn[ggid] = 0
   
@@ -72,7 +72,7 @@ def detect_intraglom_conn(cilist, GL_to_GCs):
   
   # merge all connections
   tocheck = set()
-  for rr, connpair in msg.items():
+  for rr, connpair in list(msg.items()):
     if rr >= rank:
       tocheck.update(connpair)
       
@@ -119,7 +119,7 @@ def detect_over_connected_gc(_cilist):
   
   # check for the over connected
   msg_remove = {}
-  for rr, ggids in msg.items():
+  for rr, ggids in list(msg.items()):
     for ggid in ggids:
       if gc2nconn[ggid] >= params.granule_nmax_spines:
         try:
@@ -135,12 +135,12 @@ def detect_over_connected_gc(_cilist):
   good_pair = []
   bad_pair = []
   
-  for ggids in msg_remove.values():
+  for ggids in list(msg_remove.values()):
     for ggid in ggids:
       bad_pair.append(ggid2ci[ggid][0])
       del ggid2ci[ggid][0]
 
-  for _cilist2 in ggid2ci.values():
+  for _cilist2 in list(ggid2ci.values()):
     for ci in _cilist2:
       good_pair.append(ci)
       
@@ -155,7 +155,7 @@ def mk_mconnection_info(model):
   cilist = []
 
   # initialization
-  for gid in model.mitrals.keys(): #+model.mtufted.keys():
+  for gid in list(model.mitrals.keys()): #+model.mtufted.keys():
     r[gid] = params.ranstream(gid, params.stream_latdendconnect) # init rng
     
     glomid = mgid2glom(gid) #params.cellid2glomid(gid) # init GCs connected to GL
@@ -164,7 +164,7 @@ def mk_mconnection_info(model):
 
 
   # lateral dendrites positions
-  for cellid, cell in model.mitrals.items(): #+model.mtufted.values():
+  for cellid, cell in list(model.mitrals.items()): #+model.mtufted.values():
     to_conn += latconn.lateral_connections(cellid, cell)
 
 
@@ -235,11 +235,11 @@ def mk_gconnection_info_part1(model):
       connection will not exist)
   '''
   model.rank_gconnections = {}
-  for cilist in model.mconnections.values():
+  for cilist in list(model.mconnections.values()):
     for ci in cilist:
       ggid = ci[3]
       r = gid2rank(ggid)
-      if not model.rank_gconnections.has_key(r):
+      if r not in model.rank_gconnections:
         model.rank_gconnections[r] = []
       model.rank_gconnections[r].append(ci)
 
@@ -264,7 +264,7 @@ if __name__ == '__main__':
 
   sizes = all2all(model.rank_gconnections, -1)
   for r in util.serialize():
-    print rank, " all2all sizes ", sizes
+    print(rank, " all2all sizes ", sizes)
 
-if rank == 0: print "determine_connections ", h.startsw()-t_begin
+if rank == 0: print("determine_connections ", h.startsw()-t_begin)
 

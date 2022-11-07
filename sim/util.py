@@ -29,7 +29,7 @@ def finish():
   if nhost > 0:
     pc.runworker()
     pc.done()
-    print 'total elapsed time ', h.startsw()-startsw
+    print('total elapsed time ', h.startsw()-startsw)
     h.quit()
     
 elapsedtime=h.startsw()
@@ -39,13 +39,13 @@ def elapsed(message):
   '''
   global elapsedtime
   if rank == 0:
-    print "%s elapsedtime %g"% (message, h.startsw() - elapsedtime)
+    print("%s elapsedtime %g"% (message, h.startsw() - elapsedtime))
   elapsedtime = h.startsw()
 
 
 def progress(pinvl, swlast):
   sw = h.startsw()
-  print "t=%g wall interval %g"% (h.t, sw-swlast)
+  print("t=%g wall interval %g"% (h.t, sw-swlast))
   h.cvode.event(h.t+pinvl, (progress, (pinvl , sw)))
 
 def show_progress(invl):

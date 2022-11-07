@@ -16,6 +16,7 @@ GLOM_RADIUS = 50.
 coreneuron = False
 gpu = False
 filemode = False
+dump_model = False
 
 try:
     
@@ -49,7 +50,7 @@ def load_params(_filename):
           glom2blanes.append((int(tk[0]), int(tk[1])))
           l = fi.readline()
     except:
-      print 'error during params import'
+      print('error during params import')
 
 from copy import copy
 from math import pi, sqrt
@@ -184,3 +185,4 @@ coreneuron = args.coreneuron
 gpu = args.gpu
 filemode = args.filemode
 filename = args.filename
+dump_model = args.dump_model
